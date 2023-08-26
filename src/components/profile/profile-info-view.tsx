@@ -19,7 +19,7 @@ export default function ProfileInfo() {
     }, 2500);
   }
   return (
-    <div className="relative z-50 mx-auto w-[540px] max-w-full rounded-lg bg-white px-9 py-9 dark:bg-light-dark">
+    <div className="relative z-50 mx-auto w-[1080px] max-w-full rounded-lg bg-white px-9 py-9 dark:bg-light-dark">
       <Avatar
         size="lg"
         image={authorData?.avatar?.thumbnail}

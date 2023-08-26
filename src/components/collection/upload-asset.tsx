@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import Button from '@/components/ui/button';
 import NFTGridUpload from '@/components/collection/nft-card-upload';
+import ModalDetail from '@/components/collection/modal-detail';
+
 
 export default function UploadAsset() {
 
@@ -48,6 +50,7 @@ export default function UploadAsset() {
 
   return (
     <>
+      <ModalDetail />
       <div className="mb-8">
         <div className="flex items-center justify-center">
           <h4 className="text-sm font-medium uppercase tracking-wider text-gray-900 dark:text-white sm:text-xl">

@@ -1,19 +1,83 @@
 'use client';
 
 import { Fragment, useRef, useState } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
+import { Dialog } from '@/components/ui/dialog';
+import { Transition } from '@/components/ui/transition';
+import Button from '@/components/ui/button';
+import dynamic from 'next/dynamic';
+import { Close } from '@/components/icons/close';
+import NFT1 from '@/assets/images/nft/nft-1.jpg';
+import Image from '@/components/ui/image';
+import ListCard from '@/components/ui/list-card';
+
+export const atributes = [
+  {
+    id: 1,
+    name: 'Background',
+    value: 'Black',
+  },
+  {
+    id: 2,
+    name: 'Left Eye',
+    value: 'X Orange',
+  },
+  {
+    id: 3,
+    name: 'Face',
+    value: 'Round Aqua',
+  },
+  {
+    id: 1,
+    name: 'Background',
+    value: 'Black',
+  },
+  {
+    id: 2,
+    name: 'Left Eye',
+    value: 'X Orange',
+  },
+  {
+    id: 1,
+    name: 'Background',
+    value: 'Black',
+  },
+  {
+    id: 2,
+    name: 'Left Eye',
+    value: 'X Orange',
+  },
+  {
+    id: 3,
+    name: 'Face',
+    value: 'Round Aqua',
+  },
+  {
+    id: 1,
+    name: 'Background',
+    value: 'Black',
+  },
+  {
+    id: 2,
+    name: 'Left Eye',
+    value: 'X Orange',
+  },
+];
 
 export default function ModalDetail() {
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(true);
 
-  const cancelButtonRef = useRef(null)
+  const cancelButtonRef = useRef(null);
+
+  const closeModal = () => {
+    setOpen(false);
+  };
 
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog 
-        as="div" 
+      <Dialog
+        as="div"
         className="fixed inset-0 z-50 h-full w-full overflow-y-auto overflow-x-hidden p-4 text-center sm:p-6 lg:p-8 xl:p-10 3xl:p-12"
-        initialFocus={cancelButtonRef} 
+        initialFocus={cancelButtonRef}
         onClose={setOpen}
       >
         <Transition.Child
@@ -28,58 +92,73 @@ export default function ModalDetail() {
           <Dialog.Overlay className="fixed inset-0 z-40 cursor-pointer bg-gray-700 bg-opacity-60 backdrop-blur" />
         </Transition.Child>
 
+        <span className="inline-block h-full align-middle" aria-hidden="true">
+          &#8203;
+        </span>
 
-        <div className="fixed inset-0 z-10 overflow-y-auto">
-          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-              <Transition.Child
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-105"
-                enterTo="opacity-100 scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-105"
-              >
-              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-                  <div className="sm:flex sm:items-start">
-                    <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                    </div>
-                    <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                      <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
-                        Deactivate account
-                      </Dialog.Title>
-                      <div className="mt-2">
-                        <p className="text-sm text-gray-500">
-                          Are you sure you want to deactivate your account? All of your data will be permanently
-                          removed. This action cannot be undone.
-                        </p>
-                      </div>
-                    </div>
+        {/* This element is need to fix FocusTap headless-ui warning issue */}
+        <div className="sr-only">
+          <Button
+            size="small"
+            color="gray"
+            shape="circle"
+            onClick={closeModal}
+            className="opacity-50 hover:opacity-80 "
+          >
+            <Close className="h-auto w-[13px]" />
+          </Button>
+        </div>
+
+        <Transition.Child
+          as={Fragment}
+          enter="ease-out duration-300"
+          enterFrom="opacity-0 scale-105"
+          enterTo="opacity-100 scale-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100 scale-100"
+          leaveTo="opacity-0 scale-105"
+        >
+          <div className="relative z-50 inline-block w-full text-left align-middle xs:w-auto">
+            {/* Content goes here */}
+            <div className="relative flex flex-grow flex-col overflow-hidden rounded-lg bg-white shadow-card transition-all duration-200 hover:shadow-large dark:bg-dark xs:flex-row">
+              <div className="relative block">
+                <Image
+                  src={NFT1}
+                  width={500}
+                  alt="Pulses of Imagination #214"
+                />
+              </div>
+              <div className="w-auto p-5 xs:w-[600px]">
+                <h2 className="my-5 text-xl font-medium leading-[1.45em] -tracking-wider text-gray-900 dark:text-white md:text-2xl xl:text-3xl">
+                  Flow Punk Gallery #303
+                </h2>
+                <div className="mb-5 block">
+                  <h3 className="text-heading-style mb-2 uppercase text-gray-900 dark:text-white">
+                    Description
+                  </h3>
+                  <div className="text-sm leading-6 -tracking-wider text-gray-600 dark:text-gray-400">
+                    NFT #1 - Generated and deployed on LaunchMyNFT.
                   </div>
                 </div>
-                <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                  <button
-                    type="button"
-                    className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-                    onClick={() => setOpen(false)}
-                  >
-                    Deactivate
-                  </button>
-                  <button
-                    type="button"
-                    className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                    onClick={() => setOpen(false)}
-                    ref={cancelButtonRef}
-                  >
-                    Cancel
-                  </button>
+                <div className="block">
+                  <h3 className="text-heading-style mb-2 uppercase text-gray-900 dark:text-white">
+                    Attributes
+                  </h3>
+                  <div className="grid h-[200px] grid-cols-1 gap-3 overflow-auto sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2 3xl:grid-cols-4">
+                    {atributes?.map((wallet) => (
+                      <ListCard
+                        item={wallet}
+                        key={`wallet-key-${wallet?.id}`}
+                        variant="large"
+                      />
+                    ))}
+                  </div>
                 </div>
-              </Dialog.Panel>
-            </Transition.Child>
+              </div>
+            </div>
           </div>
-        </div>
+        </Transition.Child>
       </Dialog>
     </Transition.Root>
-  )
+  );
 }

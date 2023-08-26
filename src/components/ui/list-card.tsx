@@ -1,12 +1,14 @@
 import Image from '@/components/ui/image';
 import cn from 'classnames';
 import { StaticImageData } from 'next/image';
+import { stableValueHash } from 'react-query/types/core/utils';
 type ItemType = {
   id?: string | number;
   name: string;
-  logo: StaticImageData;
+  logo?: StaticImageData;
   balance?: string;
   coinType?: string;
+  value?: string;
 };
 type CardProps = {
   item: ItemType;
@@ -37,7 +39,7 @@ export default function ListCard({
   className = 'p-3 tracking-wider rounded-lg sm:p-4',
   variant = 'small',
 }: CardProps) {
-  const { name, logo, balance, coinType } = item ?? {};
+  const { name, logo, balance, coinType, value } = item ?? {};
   return (
     <div
       className={cn(
@@ -46,14 +48,16 @@ export default function ListCard({
       )}
     >
       <div className="flex items-center">
-        <div className={cn('rounded-full', variants[variant])}>
-          <Image
-            src={logo}
-            alt={name}
-            width={handleImageSize(variant)}
-            height={handleImageSize(variant)}
-          />
-        </div>
+        {logo ? (
+          <div className={cn('rounded-full', variants[variant])}>
+            <Image
+              src={logo}
+              alt={name}
+              width={handleImageSize(variant)}
+              height={handleImageSize(variant)}
+            />
+          </div>
+        ) : null}
 
         <div className="ltr:ml-2 rtl:mr-2">
           {name}
@@ -66,6 +70,7 @@ export default function ListCard({
       </div>
       <div className="overflow-hidden text-ellipsis -tracking-wider ltr:pl-2 rtl:pr-2">
         {balance}
+        {value}
       </div>
     </div>
   );

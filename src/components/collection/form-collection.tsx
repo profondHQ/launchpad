@@ -85,11 +85,11 @@ export default function FormCollection() {
 
       {/* Name */}
       <div className="mb-8">
-        <InputLabel 
-          title="Base art name" 
+        <InputLabel
+          title="Base art name"
           subTitle="The base name of your NFT eg. 'Crypto Car #' which will name your NFTs 'Crypto Car #1', 'Crypto Car #2', 'Crypto Car #3' etc."
-          important 
-          />
+          important
+        />
         <Input type="text" placeholder="NFT #" />
       </div>
 
@@ -101,6 +101,27 @@ export default function FormCollection() {
           important
         />
         <Textarea placeholder="{name} - Generated and deployed on LaunchMyNFT." />
+      </div>
+
+      <div className="mb-8 grid grid-cols-2 gap-5">
+        <div>
+          <InputLabel title="Price" important />
+          <Input
+            min={0}
+            type="number"
+            placeholder="Enter your price"
+            inputClassName="spin-button-hidden"
+          />
+        </div>
+        <div>
+          <InputLabel title="Price" important />
+          <Input
+            min={0}
+            type="number"
+            placeholder="Enter your price"
+            inputClassName="spin-button-hidden"
+          />
+        </div>
       </div>
 
       {/* Blockchain */}
@@ -131,9 +152,7 @@ export default function FormCollection() {
                             : 'hover:bg-gray-100 dark:hover:bg-gray-700/70'
                         }`}
                       >
-                        <span className="ltr:mr-2 rtl:ml-2">
-                          {option.icon}
-                        </span>
+                        <span className="ltr:mr-2 rtl:ml-2">{option.icon}</span>
                         {option.name}
                       </div>
                     )}

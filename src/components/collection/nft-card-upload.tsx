@@ -7,7 +7,6 @@ import { useLayout } from '@/lib/hooks/use-layout';
 import { LAYOUT_OPTIONS } from '@/lib/constants';
 import Button from '@/components/ui/button';
 import routes from '@/config/routes';
-import ModalDetail from '@/components/collection/modal-detail';
 
 type NFTGridUploadProps = {
   image: string;
@@ -69,7 +68,6 @@ export default function NFTGridUpload({
           <Button shape="rounded" variant="solid" color="danger" className="dark:bg-danger-800">delete</Button>
         </div>
       </div>
-      {/* <ModalDetail /> */}
     </div>
   );
 }
