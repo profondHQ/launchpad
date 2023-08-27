@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, useRef, useState } from 'react';
+import { Fragment, useRef, useState, useEffect } from 'react';
 import { Dialog } from '@/components/ui/dialog';
 import { Transition } from '@/components/ui/transition';
 import Button from '@/components/ui/button';
@@ -10,75 +10,47 @@ import NFT1 from '@/assets/images/nft/nft-1.jpg';
 import Image from '@/components/ui/image';
 import ListCard from '@/components/ui/list-card';
 
-export const atributes = [
-  {
-    id: 1,
-    name: 'Background',
-    value: 'Black',
-  },
-  {
-    id: 2,
-    name: 'Left Eye',
-    value: 'X Orange',
-  },
-  {
-    id: 3,
-    name: 'Face',
-    value: 'Round Aqua',
-  },
-  {
-    id: 1,
-    name: 'Background',
-    value: 'Black',
-  },
-  {
-    id: 2,
-    name: 'Left Eye',
-    value: 'X Orange',
-  },
-  {
-    id: 1,
-    name: 'Background',
-    value: 'Black',
-  },
-  {
-    id: 2,
-    name: 'Left Eye',
-    value: 'X Orange',
-  },
-  {
-    id: 3,
-    name: 'Face',
-    value: 'Round Aqua',
-  },
-  {
-    id: 1,
-    name: 'Background',
-    value: 'Black',
-  },
-  {
-    id: 2,
-    name: 'Left Eye',
-    value: 'X Orange',
-  },
-];
+type Modalsrops = {
+  image: string;
+  metadata: any;
+  show: boolean;
+  handleClose: () => void;
+};
 
-export default function ModalDetail() {
-  const [open, setOpen] = useState(true);
-
+export default function ModalDetail({
+  image,
+  metadata,
+  show,
+  handleClose,
+}: Modalsrops) {
   const cancelButtonRef = useRef(null);
+  const [atributes, setAtributes] = useState<any[]>([]);
 
   const closeModal = () => {
-    setOpen(false);
+    handleClose();
   };
 
+  useEffect(() => {
+    const newAttr: any[] = [];
+    if (metadata?.attributes) {
+      metadata.attributes.forEach((attr: any, index: number) => {
+        newAttr.push({
+          id: index,
+          name: attr.trait_type,
+          value: attr.value,
+        });
+      });
+    }
+    setAtributes(newAttr);
+  }, [metadata]);
+
   return (
-    <Transition.Root show={open} as={Fragment}>
+    <Transition.Root show={show} as={Fragment}>
       <Dialog
         as="div"
         className="fixed inset-0 z-50 h-full w-full overflow-y-auto overflow-x-hidden p-4 text-center sm:p-6 lg:p-8 xl:p-10 3xl:p-12"
         initialFocus={cancelButtonRef}
-        onClose={setOpen}
+        onClose={closeModal}
       >
         <Transition.Child
           as={Fragment}
@@ -123,32 +95,33 @@ export default function ModalDetail() {
             <div className="relative flex flex-grow flex-col overflow-hidden rounded-lg bg-white shadow-card transition-all duration-200 hover:shadow-large dark:bg-dark xs:flex-row">
               <div className="relative block">
                 <Image
-                  src={NFT1}
+                  src={image}
                   width={500}
-                  alt="Pulses of Imagination #214"
+                  height={500}
+                  alt={metadata?.name}
                 />
               </div>
               <div className="w-auto p-5 xs:w-[600px]">
                 <h2 className="my-5 text-xl font-medium leading-[1.45em] -tracking-wider text-gray-900 dark:text-white md:text-2xl xl:text-3xl">
-                  Flow Punk Gallery #303
+                  {metadata?.name}
                 </h2>
                 <div className="mb-5 block">
                   <h3 className="text-heading-style mb-2 uppercase text-gray-900 dark:text-white">
                     Description
                   </h3>
                   <div className="text-sm leading-6 -tracking-wider text-gray-600 dark:text-gray-400">
-                    NFT #1 - Generated and deployed on LaunchMyNFT.
+                    {metadata?.description}
                   </div>
                 </div>
                 <div className="block">
                   <h3 className="text-heading-style mb-2 uppercase text-gray-900 dark:text-white">
                     Attributes
                   </h3>
-                  <div className="grid h-[200px] grid-cols-1 gap-3 overflow-auto sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2 3xl:grid-cols-4">
+                  <div className="grid h-[200px] grid-cols-1 gap-3 overflow-auto sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2 3xl:grid-cols-2">
                     {atributes?.map((wallet) => (
                       <ListCard
                         item={wallet}
-                        key={`wallet-key-${wallet?.id}`}
+                        key={`nft-${wallet?.id}`}
                         variant="large"
                       />
                     ))}
