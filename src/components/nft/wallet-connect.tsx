@@ -1,7 +1,7 @@
 'use client';
 
-import { useWeb3Modal } from '@web3modal/react';
-import { useAccount, useBalance, useDisconnect } from 'wagmi';
+// import { useWeb3Modal } from '@web3modal/react';
+// import { useAccount, useBalance, useDisconnect } from 'wagmi';
 import cn from 'classnames';
 import Button from '@/components/ui/button';
 import { Menu } from '@/components/ui/menu';
@@ -9,6 +9,8 @@ import { Transition } from '@/components/ui/transition';
 import ActiveLink from '@/components/ui/links/active-link';
 import { ChevronForward } from '@/components/icons/chevron-forward';
 import { PowerIcon } from '@/components/icons/power';
+import { OpenSelectWallet, WalletContext } from '@/contexts/index';
+import { useContext } from 'react';
 
 export default function WalletConnect({
   btnClassName,
@@ -17,13 +19,20 @@ export default function WalletConnect({
   btnClassName?: string;
   anchorClassName?: string;
 }) {
-  const { address } = useAccount();
-  const { open } = useWeb3Modal();
-  const { data } = useBalance({
-    address,
-  });
-  const { disconnect } = useDisconnect();
-  const balance = data?.formatted;
+  // const { address } = useAccount();
+  // const { open } = useWeb3Modal();
+  // const { data } = useBalance({
+  //   address,
+  // });
+  // const { disconnect } = useDisconnect();
+  // const balance = data?.formatted;
+  // TODO: implement wallet info after connected
+  const address = null;
+  const open = () => { };
+  const disconnect = () => { };
+  const balance = '1';
+  const selectWallet = useContext(OpenSelectWallet);
+
 
   return (
     <>
@@ -100,7 +109,7 @@ export default function WalletConnect({
         </div>
       ) : (
         <Button
-          onClick={() => open()}
+          onClick={() => selectWallet.open()}
           className={cn('shadow-main hover:shadow-large', btnClassName)}
         >
           CONNECT
