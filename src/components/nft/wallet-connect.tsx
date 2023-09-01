@@ -19,24 +19,18 @@ export default function WalletConnect({
   btnClassName?: string;
   anchorClassName?: string;
 }) {
-  // const { address } = useAccount();
-  // const { open } = useWeb3Modal();
-  // const { data } = useBalance({
-  //   address,
-  // });
-  // const { disconnect } = useDisconnect();
-  // const balance = data?.formatted;
-  // TODO: implement wallet info after connected
-  const address = null;
-  const open = () => { };
-  const disconnect = () => { };
-  const balance = '1';
+  // TODO: Account selection
+  // TODO: Balance fetching for selected chains
+  // TODO: Select chains
+  const walletContext = useContext(WalletContext);
+  const firstAccount = walletContext.accounts?.[0];
   const selectWallet = useContext(OpenSelectWallet);
+  const disconnect = () => { selectWallet.open() };
 
 
   return (
     <>
-      {address ? (
+      {firstAccount ? (
         <div className="flex items-center gap-3 sm:gap-6 lg:gap-8">
           <div className="relative flex-shrink-0">
             <Menu>
@@ -69,16 +63,13 @@ export default function WalletConnect({
                       <div className="border-b border-dashed border-gray-200 px-6 py-5 dark:border-gray-700">
                         <div className="flex items-center justify-between gap-3">
                           <span className="text-sm font-medium -tracking-tighter text-gray-600 dark:text-gray-400">
-                            Balance
+                            Address
                           </span>
                           <span className="rounded-lg bg-gray-100 px-2 py-1 text-sm tracking-tighter dark:bg-gray-800">
-                            {address.slice(0, 6)}
+                            {firstAccount.address.slice(0, 6)}
                             {'...'}
-                            {address.slice(address.length - 6)}
+                            {firstAccount.address.slice(firstAccount.address.length - 6)}
                           </span>
-                        </div>
-                        <div className="mt-3 font-medium uppercase tracking-wider text-gray-900 dark:text-white">
-                          {balance} ETH
                         </div>
                       </div>
                     </Menu.Item>
