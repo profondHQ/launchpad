@@ -11,6 +11,7 @@ import { ChevronForward } from '@/components/icons/chevron-forward';
 import { PowerIcon } from '@/components/icons/power';
 import { OpenSelectWallet, WalletContext } from '@/contexts/index';
 import { useContext } from 'react';
+import { useModal } from '../modal-views/context';
 
 export default function WalletConnect({
   btnClassName,
@@ -22,11 +23,12 @@ export default function WalletConnect({
   // TODO: Account selection
   // TODO: Balance fetching for selected chains
   // TODO: Select chains
+
+  const { openModal } = useModal();
   const walletContext = useContext(WalletContext);
   const firstAccount = walletContext.accounts?.[0];
   const selectWallet = useContext(OpenSelectWallet);
   const disconnect = () => { selectWallet.open() };
-
 
   return (
     <>
@@ -61,6 +63,14 @@ export default function WalletConnect({
                   <Menu.Item>
                     <Menu.Item>
                       <div className="border-b border-dashed border-gray-200 px-6 py-5 dark:border-gray-700">
+                        <div className="flex items-center justify-between gap-3 my-1">
+                          <span className="text-sm font-medium -tracking-tighter text-gray-600 dark:text-gray-400">
+                            Name
+                          </span>
+                          <span className="rounded-lg bg-gray-100 px-2 py-1 text-sm tracking-tighter dark:bg-gray-800">
+                            {firstAccount.name}
+                          </span>
+                        </div>
                         <div className="flex items-center justify-between gap-3">
                           <span className="text-sm font-medium -tracking-tighter text-gray-600 dark:text-gray-400">
                             Address
@@ -73,6 +83,19 @@ export default function WalletConnect({
                         </div>
                       </div>
                     </Menu.Item>
+                  </Menu.Item>
+                  <Menu.Item>
+                    <div className="border-b border-dashed border-gray-200 p-3 dark:border-gray-700">
+                      <div
+                        className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-900 transition hover:bg-gray-50 dark:text-white dark:hover:bg-gray-800"
+                        onClick={() => openModal('SEARCH_VIEW')}
+                      >
+                        <span className="grow uppercase">
+                          Change Account
+                        </span>
+                        <ChevronForward />
+                      </div>
+                    </div>
                   </Menu.Item>
                   <Menu.Item>
                     <div className="p-3">
@@ -97,7 +120,7 @@ export default function WalletConnect({
               CREATE
             </Button>
           </ActiveLink>
-        </div>
+        </div >
       ) : (
         <Button
           onClick={() => selectWallet.open()}
@@ -105,7 +128,8 @@ export default function WalletConnect({
         >
           CONNECT
         </Button>
-      )}
+      )
+      }
     </>
   );
 }
