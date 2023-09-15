@@ -2,32 +2,10 @@
 
 import { useState } from 'react';
 import cn from 'classnames';
-import { Transition } from '@/components/ui/transition';
-import { Listbox } from '@/components/ui/listbox';
-import Image from '@/components/ui/image';
 import Button from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import Input from '@/components/ui/forms/input';
-import Textarea from '@/components/ui/forms/textarea';
-import Uploader from '@/components/ui/forms/uploader';
 import InputLabel from '@/components/ui/input-label';
-import ToggleBar from '@/components/ui/toggle-bar';
-import { ChevronDown } from '@/components/icons/chevron-down';
-import { Ethereum } from '@/components/icons/ethereum';
-import { Flow } from '@/components/icons/flow';
-import { Warning } from '@/components/icons/warning';
-import { Unlocked } from '@/components/icons/unlocked';
-import Avatar from '@/components/ui/avatar';
-import Preview from '@/components/create-nft/nft-preview';
-import FormCollection from '@/components/collection/form-collection';
-import UploadAsset from '@/components/collection/upload-asset';
-import DeployNFT from '@/components/collection/deploy-nft';
-
-//images
-import AuthorImage from '@/assets/images/author.jpg';
-import NFT1 from '@/assets/images/nft/nft-1.jpg';
-import PriceType from '@/components/create-nft/price-types-props';
-import { CheckmarkIcon } from '@/components/icons/checkmark';
 
 export default function LaunchCoin() {
   const [publish, setPublish] = useState(true);
