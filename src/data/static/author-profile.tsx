@@ -29,6 +29,28 @@ export const authorWallets = [
     balance: '$150.60',
   },
 ];
+export const myCoin = [
+  {
+    id: 1,
+    name: 'ABC',
+    supply: '100',
+  },
+  {
+    id: 2,
+    name: 'POI',
+    supply: '200',
+  },
+  {
+    id: 3,
+    name: 'TTS',
+    supply: '300',
+  },
+  {
+    id: 4,
+    name: 'JJK',
+    supply: '400',
+  },
+];
 
 // Profile Protocols Data
 import PooltoGether from '@/assets/images/portfolio/poolto-gether.svg';

@@ -51,12 +51,6 @@ function HeaderRightArea() {
       </div>
 
       <div className="hidden gap-6 lg:flex 2xl:gap-8">
-        {isMounted && ['xs', 'sm', 'md', 'lg'].indexOf(breakpoint) == -1 && (
-          <div>
-            <SearchButton variant="transparent" className="dark:text-white" />
-          </div>
-        )}
-        <NotificationButton />
         <WalletConnect />
       </div>
 

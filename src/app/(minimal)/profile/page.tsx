@@ -1,5 +1,5 @@
-import AuthorProfilePage from '@/app/shared/profile';
+import Profile from '@/components/profile/profile';
 
-export default function AuthorProfilePageMinimal() {
-  return <AuthorProfilePage />;
+export default function ProfileMinimal() {
+  return <Profile />;
 }
