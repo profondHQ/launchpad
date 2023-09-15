@@ -19,6 +19,7 @@ import '@/assets/css/globals.css';
 import '@/assets/css/range-slider.css';
 import { WalletContextProvider } from '@/providers/WalletContextProvider';
 import SelectWalletModal from '@/components/sub-connect/SelectWalletModal';
+import SelectAccountModal from '@/components/sub-connect/SelectAccountModal';
 
 const fira_code = Fira_Code({
   weight: ['400', '500', '600', '700'],
@@ -56,6 +57,7 @@ export default function RootLayout({
                 <DrawersContainer />
               </Suspense>
               <SelectWalletModal theme={'dark'} />
+              <SelectAccountModal theme={'dark'} />
               {children}
             </WalletContextProvider>
           </ThemeProvider>

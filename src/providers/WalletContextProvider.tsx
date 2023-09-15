@@ -9,7 +9,7 @@ import { getEvmWalletBySource } from '@subwallet/wallet-connect/evm/evmWallets';
 import { EvmWallet, Wallet, WalletAccount } from '@subwallet/wallet-connect/types';
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { OpenSelectWallet, WalletContext, WalletContextInterface } from '../contexts/index';
+import { OpenSelectAccount, OpenSelectWallet, WalletContext, WalletContextInterface } from '../contexts/index';
 
 // interface Props {
 //     children: React.ReactElement;
@@ -18,15 +18,28 @@ import { OpenSelectWallet, WalletContext, WalletContextInterface } from '../cont
 export function WalletContextProvider({ children }: React.PropsWithChildren) {
     const [walletKey, setWalletKey] = useLocalStorage('wallet-key');
     const [walletType, setWalletType] = useLocalStorage('wallet-type', 'substrate');
+    const [selectedLocalAccount, setSelectedLocalAccount] = useLocalStorage('selected-account')
     const [currentWallet, setCurrentWallet] = useState<Wallet | EvmWallet | undefined>(getWalletBySource(walletKey));
     const [isSelectWallet, setIsSelectWallet] = useState(false);
+    const [isSelectAccount, setIsSelectAccount] = useState(false);
     const [accounts, setAccounts] = useState<WalletAccount[]>([]);
+    const [selectedAccount, setSelectedAccount] = useState<WalletAccount|undefined>(undefined)
 
     const afterSelectWallet = useCallback(
         async (wallet: Wallet) => {
             const infos = await wallet.getAccounts();
 
-            infos && setAccounts(infos);
+            if(infos){
+                setAccounts(infos);
+                if(selectedLocalAccount){
+                    setSelectedAccount(JSON.parse(selectedLocalAccount))
+                }
+                else{
+                    setSelectedLocalAccount(JSON.stringify(infos[0]))
+                    setSelectedAccount(infos[0])
+                }
+                    
+            } 
         },
         []
     );
@@ -67,6 +80,8 @@ export function WalletContextProvider({ children }: React.PropsWithChildren) {
         wallet: getWalletBySource(walletKey),
         evmWallet: getEvmWalletBySource(walletKey),
         accounts,
+        selectedAccount,
+        setSelectedAccount,
         setWallet: (wallet: Wallet | EvmWallet | undefined, walletType: 'substrate' | 'evm') => {
             if (walletType === 'substrate') {
                 wallet && selectWallet(wallet as Wallet);
@@ -86,6 +101,16 @@ export function WalletContextProvider({ children }: React.PropsWithChildren) {
         },
         close: () => {
             setIsSelectWallet(false);
+        }
+    };
+
+    const selectAccountContext = {
+        isOpen: isSelectAccount,
+        open: () => {
+            setIsSelectAccount(true);
+        },
+        close: () => {
+            setIsSelectAccount(false);
         }
     };
 
@@ -113,7 +138,9 @@ export function WalletContextProvider({ children }: React.PropsWithChildren) {
 
     return <WalletContext.Provider value={walletContext as WalletContextInterface}>
         <OpenSelectWallet.Provider value={selectWalletContext}>
-            {children}
+            <OpenSelectAccount.Provider value={selectAccountContext}>
+                {children}
+            </OpenSelectAccount.Provider>
         </OpenSelectWallet.Provider>
     </WalletContext.Provider>;
 }

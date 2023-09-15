@@ -9,9 +9,10 @@ import { Transition } from '@/components/ui/transition';
 import ActiveLink from '@/components/ui/links/active-link';
 import { ChevronForward } from '@/components/icons/chevron-forward';
 import { PowerIcon } from '@/components/icons/power';
-import { OpenSelectWallet, WalletContext } from '@/contexts/index';
+import { OpenSelectAccount, OpenSelectWallet, WalletContext } from '@/contexts/index';
 import { useContext } from 'react';
 import { useModal } from '../modal-views/context';
+import { prettyTruncate } from '@/utils/common';
 
 export default function WalletConnect({
   btnClassName,
@@ -24,8 +25,8 @@ export default function WalletConnect({
   // TODO: Balance fetching for selected chains
   // TODO: Select chains
 
-  const { openModal } = useModal();
   const walletContext = useContext(WalletContext);
+  const accountContext = useContext(OpenSelectAccount)
   const firstAccount = walletContext.accounts?.[0];
   const selectWallet = useContext(OpenSelectWallet);
   const disconnect = () => { selectWallet.open() };
@@ -36,7 +37,13 @@ export default function WalletConnect({
         <div className="flex items-center gap-3 sm:gap-6 lg:gap-8">
           <div className="relative flex-shrink-0">
             <Menu>
-              <Menu.Button className="block h-10 w-10 overflow-hidden rounded-full border-3 border-solid border-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shadow-main transition-all hover:-translate-y-0.5 hover:shadow-large dark:border-gray-700 sm:h-12 sm:w-12"></Menu.Button>
+              <Menu.Button className="flex items-center overflow-hidden rounded-full shadow-main transition-all hover:-translate-y-0.5 hover:shadow-large bg-white py-2 px-3 space-x-2">
+                <div className='bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-10 w-10 rounded-full'></div>
+                <div className='flex flex-col items-start'>
+                  <p className='text-gray-700 dark:text-white font-semibold'>{walletContext.selectedAccount.name}</p>
+                  <p className='text-slate-700 dark:text-gray-300 text-xs'>{prettyTruncate(walletContext.selectedAccount.address, 12, 'address')}</p>
+                </div>
+              </Menu.Button>
               <Transition
                 enter="ease-out duration-300"
                 enterFrom="opacity-0 translate-y-4"
@@ -68,7 +75,7 @@ export default function WalletConnect({
                             Name
                           </span>
                           <span className="rounded-lg bg-gray-100 px-2 py-1 text-sm tracking-tighter dark:bg-gray-800">
-                            {firstAccount.name}
+                            {walletContext.selectedAccount?.name}
                           </span>
                         </div>
                         <div className="flex items-center justify-between gap-3">
@@ -76,9 +83,10 @@ export default function WalletConnect({
                             Address
                           </span>
                           <span className="rounded-lg bg-gray-100 px-2 py-1 text-sm tracking-tighter dark:bg-gray-800">
-                            {firstAccount.address.slice(0, 6)}
+                            {prettyTruncate(walletContext.selectedAccount?.address, 15, 'address')}
+                            {/* {firstAccount.address.slice(0, 6)}
                             {'...'}
-                            {firstAccount.address.slice(firstAccount.address.length - 6)}
+                            {firstAccount.address.slice(firstAccount.address.length - 6)} */}
                           </span>
                         </div>
                       </div>
@@ -88,7 +96,7 @@ export default function WalletConnect({
                     <div className="border-b border-dashed border-gray-200 p-3 dark:border-gray-700">
                       <div
                         className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-900 transition hover:bg-gray-50 dark:text-white dark:hover:bg-gray-800"
-                        onClick={() => openModal('SEARCH_VIEW')}
+                        onClick={() => accountContext.open()}
                       >
                         <span className="grow uppercase">
                           Change Account
