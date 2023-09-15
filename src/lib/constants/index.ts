@@ -1,6 +1,6 @@
 export enum LAYOUT_OPTIONS {
-  MODERN = 'modern',
   MINIMAL = 'minimal',
+  MODERN = 'modern',
   RETRO = 'retro',
   CLASSIC = 'classic',
 }

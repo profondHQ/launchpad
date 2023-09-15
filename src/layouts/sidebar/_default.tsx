@@ -8,10 +8,7 @@ import { MenuItem } from '@/components/ui/collapsible-menu';
 import Button from '@/components/ui/button';
 import { useDrawer } from '@/components/drawer-views/context';
 import { Close } from '@/components/icons/close';
-import {
-  defaultMenuItems,
-  otherPagesMenuItems,
-} from '@/layouts/sidebar/_menu-items';
+import { defaultMenuItems } from '@/layouts/sidebar/_menu-items';
 import { LAYOUT_OPTIONS } from '@/lib/constants';
 //images
 import AuthorImage from '@/assets/images/author.jpg';
@@ -75,15 +72,6 @@ export default function Sidebar({
 
           <div className="mt-12">
             {sideBarMenus?.map((item, index) => (
-              <MenuItem
-                key={'default' + item.name + index}
-                name={item.name}
-                href={item.href}
-                icon={item.icon}
-                dropdownItems={item.dropdownItems}
-              />
-            ))}
-            {otherPagesMenuItems?.map((item, index) => (
               <MenuItem
                 key={'default' + item.name + index}
                 name={item.name}

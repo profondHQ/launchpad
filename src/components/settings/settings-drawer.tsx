@@ -228,9 +228,9 @@ function LayoutSwitcher() {
 function ColorSwitcher() {
   const [themeColor, setThemeColor] = useLocalStorage(
     'criptic-color',
-    '#323743'
+    '#009e60'
   );
-  useThemeColor(themeColor ? themeColor : '#323743');
+  useThemeColor(themeColor ? themeColor : '#009e60');
   return (
     <div className="px-6 pt-8">
       <h4 className="mb-4 text-sm font-medium text-gray-900 dark:text-white">

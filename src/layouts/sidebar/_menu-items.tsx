@@ -23,101 +23,14 @@ export const defaultMenuItems = [
     href: routes.lauchCollection,
     dropdownItems: [
       {
-        name: 'Launch Collection',
+        name: 'Collection',
         icon: <CompassIcon />,
         href: routes.lauchCollection,
       },
-    ],
-  },
-  // {
-  //   name: 'Live Pricing',
-  //   icon: <LivePricing />,
-  //   href: routes.livePricing,
-  // },
-  // {
-  //   name: 'Farm',
-  //   icon: <FarmIcon />,
-  //   href: routes.farms,
-  // },
-  // {
-  //   name: 'Swap',
-  //   icon: <ExchangeIcon />,
-  //   href: routes.swap,
-  // },
-  // {
-  //   name: 'Liquidity',
-  //   icon: <PoolIcon />,
-  //   href: routes.liquidity,
-  // },
-  // {
-  //   name: 'NFTs',
-  //   icon: <CompassIcon />,
-  //   href: routes.search,
-  //   dropdownItems: [
-  //     {
-  //       name: 'Explore NFTs',
-  //       icon: <CompassIcon />,
-  //       href: routes.search,
-  //     },
-  //     {
-  //       name: 'Create NFT',
-  //       icon: <PlusCircle />,
-  //       href: routes.createNft,
-  //     },
-  //     {
-  //       name: 'NFT Details',
-  //       icon: <DiskIcon />,
-  //       href: routes.nftDetails,
-  //     },
-  //   ],
-  // },
-  // {
-  //   name: 'Profile',
-  //   icon: <ProfileIcon />,
-  //   href: routes.profile,
-  // },
-  // {
-  //   name: 'Vote',
-  //   icon: <VoteIcon />,
-  //   href: routes.vote,
-  //   dropdownItems: [
-  //     {
-  //       name: 'Explore',
-  //       href: routes.vote,
-  //     },
-  //     {
-  //       name: 'Vote with criptic',
-  //       href: routes.proposals,
-  //     },
-  //     {
-  //       name: 'Create proposal',
-  //       href: routes.createProposal,
-  //     },
-  //   ],
-  // },
-];
-
-export const otherPagesMenuItems = [
-  {
-    name: 'Authentication',
-    icon: <LockIcon className="w-[18px]" />,
-    href: routes.signIn,
-    dropdownItems: [
       {
-        name: 'Sign in',
-        href: routes.signIn,
-      },
-      {
-        name: 'Sign up',
-        href: routes.signUp,
-      },
-      {
-        name: 'Reset pin',
-        href: routes.resetPin,
-      },
-      {
-        name: 'Forget password',
-        href: routes.forgetPassword,
+        name: 'Coin',
+        icon: <CompassIcon />,
+        href: routes.lauchCoin,
       },
     ],
   },

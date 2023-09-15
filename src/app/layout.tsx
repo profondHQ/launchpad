@@ -24,7 +24,7 @@ const fira_code = Fira_Code({
 
 export const metadata = {
   title: 'Profond',
-  description: 'Prodond',
+  description: 'Profond',
 };
 
 export default function RootLayout({
@@ -33,7 +33,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" dir="ltr" className={cn('light', fira_code.className)}>
+    <html lang="en" dir="ltr" className={cn('dark', fira_code.className)}>
       <head>
         {/* maximum-scale 1 meta tag need to prevent ios input focus auto zooming */}
         <meta

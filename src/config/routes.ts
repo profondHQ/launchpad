@@ -26,6 +26,7 @@ const routes = {
   forgetPassword: '/authentication/forget-password',
   collection:'/collection',
   lauchCollection: '/collection/launch',
+  lauchCoin: '/collection/coin',
 };
 
 export default routes;

@@ -14,10 +14,7 @@ import { useDrawer } from '@/components/drawer-views/context';
 import { useLayout } from '@/lib/hooks/use-layout';
 import { Close } from '@/components/icons/close';
 import { useClickAway } from '@/lib/hooks/use-click-away';
-import {
-  defaultMenuItems,
-  otherPagesMenuItems,
-} from '@/layouts/sidebar/_menu-items';
+import { defaultMenuItems } from '@/layouts/sidebar/_menu-items';
 import routes from '@/config/routes';
 //images
 import AuthorImage from '@/assets/images/author.jpg';
@@ -115,30 +112,10 @@ export default function Sidebar({ className }: { className?: string }) {
                   icon={item.icon}
                 />
               ))}
-              {otherPagesMenuItems.map((item, index) => (
-                <MenuItem
-                  isActive={
-                    item.href === pathname ||
-                    isSubMenuActive(item.dropdownItems!)
-                  }
-                  key={'drawer' + item.name + index}
-                  href=""
-                  icon={item.icon}
-                />
-              ))}
             </div>
           ) : (
             <div className="mt-5 2xl:mt-8">
               {sideBarMenuItems.map((item, index) => (
-                <MenuItem
-                  key={'drawer-full' + item.name + index}
-                  name={item.name}
-                  href={item.href}
-                  icon={item.icon}
-                  dropdownItems={item.dropdownItems}
-                />
-              ))}
-              {otherPagesMenuItems.map((item, index) => (
                 <MenuItem
                   key={'drawer-full' + item.name + index}
                   name={item.name}
