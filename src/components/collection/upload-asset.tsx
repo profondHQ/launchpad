@@ -4,10 +4,14 @@ import { useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import Button from '@/components/ui/button';
 import NFTGridUpload from '@/components/collection/nft-card-upload';
+import { uploadFiles } from '@/utils/common';
+import axios from 'axios';
 
-export default function UploadAsset() {
+export default function UploadAsset({metadataColl, setMetadataColl}: {metadataColl: any, setMetadataColl: any}) {
   const [files, setFiles] = useState([]);
   const [uploadedData, setUploadedData] = useState<any>([]);
+  const [uploaded, setUploaded] = useState(false)
+  const [loading, setLoading] = useState(false)
   const { getRootProps, getInputProps } = useDropzone({
     multiple: true,
     onDrop: (acceptedFiles: any) => {
@@ -61,7 +65,37 @@ export default function UploadAsset() {
     handleMetadata(files);
   }, [files]);
 
-  console.log(uploadedData);
+  const onUpload = async()=>{
+    try{
+      setLoading(true)
+      let newUploadedData: any[] = []
+      const imagefiles: any = files.filter((file:any) => file.type.includes('image'))
+      const res = await Promise.all(imagefiles.map((file:any) => uploadFiles([file])))
+      uploadedData?.forEach((uploaded:any, idx: number) => {
+        uploaded.metadata.image = `ipfs://${res[idx]}/${imagefiles[idx].name}`
+        newUploadedData.push(uploaded)
+      })
+      const newUploadedMetadata = newUploadedData.map((newUploaded:any) => newUploaded.metadata)
+      
+      await axios.post('/api', {metadatas: newUploadedMetadata})
+
+      const metadataFiles  = newUploadedMetadata.map((data, idx) => {
+        const str = JSON.stringify(data);
+        const file = new File([str], `${idx}.json`, {type: "application/json"})
+        return file
+      })
+      const metadataRootCid = await uploadFiles(metadataFiles)
+      setMetadataColl({
+        ...metadataColl,
+        base_uri: `ipfs://${metadataRootCid}`
+      })
+      await axios.put('/api')
+      setLoading(false)
+      setUploaded(true)
+    }catch(error){
+      setLoading(false)
+    }
+  }
 
   return (
     <>
@@ -111,6 +145,11 @@ export default function UploadAsset() {
                 <NFTGridUpload key={index} data={nft} />
               ))}
             </div>
+          </div>
+          <div className='flex items-center justify-center w-full'>
+          <Button shape="rounded" className="mr-2" isLoading={loading} onClick={onUpload}>
+            {uploaded ? 'Uploaded' : 'Upload'}
+          </Button>
           </div>
         </>
       ) : null}

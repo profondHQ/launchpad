@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+import { Suspense, useContext, useEffect, useState } from 'react';
 import ParamTab, { TabPanel } from '@/components/ui/param-tab';
 import TransactionSearchForm from '@/components/author/transaction-search-form';
 import TransactionHistory from '@/components/author/transaction-history';
@@ -9,6 +9,9 @@ import { useLayout } from '@/lib/hooks/use-layout';
 import { newCollections } from '@/data/static/collections';
 import { myCoin } from '@/data/static/author-profile';
 import Loader from '@/components/ui/loader';
+import axios from 'axios';
+import { API_URL } from '@/config/common';
+import { WalletContext } from '@/contexts';
 
 const tabMenu = [
   {
@@ -22,6 +25,31 @@ const tabMenu = [
 ];
 
 export default function ProfileTab() {
+  const {selectedAccount} = useContext(WalletContext)
+  const [myColls, setMyColls] = useState<any|null>(null)
+  const [myCoins, setMyCoins] = useState<any|null>(null)
+
+  const getMyColls = async()=>{
+    const res = await axios.get(API_URL + '/collections', {params: {
+      owner_address: selectedAccount?.address
+    }})
+    setMyColls(res.data.result)
+  }
+
+  const getMyCoins = async()=>{
+    const res = await axios.get(API_URL + '/coins', {params: {
+      minter_address: selectedAccount?.address
+    }})
+    setMyCoins(res.data.result)
+  }
+
+  useEffect(()=>{
+    if(selectedAccount){
+      getMyColls()
+      getMyCoins()
+    }
+  },[selectedAccount])
+
   return (
     <Suspense fallback={<Loader variant="blink" />}>
       <ParamTab tabMenu={tabMenu}>

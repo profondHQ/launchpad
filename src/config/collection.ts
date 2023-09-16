@@ -1,0 +1,4 @@
+export const collectionConfig = {
+  code_hash: '0x23e2ae0aa98a1e52a6d6d30fcc1ce713bee5425c26725e6c802b2737ee88fa18',
+  web3storage_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDBEQkZCNTNCZjkxNTUzQjk3QTZiMDJkNWVGYUY4MTFiNzk0NTczN2UiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2OTQyNzIzMzA1ODksIm5hbWUiOiJwcm9mb25kIn0.0ezY8Ly_LPi5cx5nQEpfPUZdwvr9SwmyE4yKv4aEym4',
+}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import cn from 'classnames';
 import { Transition } from '@/components/ui/transition';
 import { Listbox } from '@/components/ui/listbox';
@@ -24,28 +24,44 @@ import Preview from '@/components/create-nft/nft-preview';
 import AuthorImage from '@/assets/images/author.jpg';
 import NFT1 from '@/assets/images/nft/nft-1.jpg';
 import PriceType from '@/components/create-nft/price-types-props';
+import { AlephZero } from '../icons/aleph-zero';
 
 const BlockchainOptions = [
   {
     id: 1,
-    name: 'Ethereum',
-    value: 'ethereum',
-    icon: <Ethereum />,
+    name: 'Aleph Zero Testnet',
+    value: 'aleph-zero',
+    icon: <AlephZero />,
   },
-  {
-    id: 2,
-    name: 'Flow',
-    value: 'flow',
-    icon: <Flow />,
-  },
+  // {
+  //   id: 2,
+  //   name: 'Flow',
+  //   value: 'flow',
+  //   icon: <Flow />,
+  // },
 ];
 
-export default function FormCollection() {
+export default function FormCollection({metadataColl, setMetadataColl}: {metadataColl: any, setMetadataColl: any}) {
   let [publish, setPublish] = useState(true);
   let [explicit, setExplicit] = useState(false);
   let [unlocked, setUnlocked] = useState(false);
   let [priceType, setPriceType] = useState('fixed');
-  let [blockchain, setBlockChain] = useState(BlockchainOptions[0]);
+  let [blockchain, setBlockChain] = useState(BlockchainOptions[0])
+
+  const onInput = (e: ChangeEvent<HTMLInputElement>, type: string)=>{
+    setMetadataColl({
+      ...metadataColl,
+      [type]: e.target.value
+    })
+  }
+
+  const onSwitch = (checked: boolean, type: string)=>{
+    setMetadataColl({
+      ...metadataColl,
+      [type]: checked ? true : false
+    })
+  }
+
   return (
     <>
       <div className="mb-8">
@@ -55,25 +71,21 @@ export default function FormCollection() {
       </div>
 
       <div className="mb-8">
-        <InputLabel title="Contract Name" important />
-        <Input type="text" placeholder="MyNFTs" />
-      </div>
-      <div className="mb-8">
         <InputLabel title="Collection Name" important />
-        <Input type="text" placeholder="My NFTs" />
+        <Input type="text" placeholder="MyNFTs" onChange={(e)=> onInput(e, 'name')} />
       </div>
       <div className="mb-8">
         <InputLabel title="Symbol" important />
-        <Input type="text" placeholder="MNFT" />
+        <Input type="text" placeholder="MNFT" onChange={(e)=> onInput(e, 'symbol')} />
       </div>
       <div className="mb-8 grid grid-cols-2 gap-5">
         <div>
           <InputLabel title="Launch Date" important />
-          <Input type="date" placeholder="MNFT" />
+          <Input type="date" placeholder="MNFT" onChange={(e)=> onInput(e, 'public_sale_start_at')} />
         </div>
         <div>
           <InputLabel title="End Date" important />
-          <Input type="date" placeholder="MNFT" />
+          <Input type="date" placeholder="MNFT" onChange={(e)=> onInput(e, 'public_sale_end_at')} />
         </div>
       </div>
 
@@ -84,24 +96,24 @@ export default function FormCollection() {
       </div>
 
       {/* Name */}
-      <div className="mb-8">
+      {/* <div className="mb-8">
         <InputLabel
           title="Base art name"
           subTitle="The base name of your NFT eg. 'Crypto Car #' which will name your NFTs 'Crypto Car #1', 'Crypto Car #2', 'Crypto Car #3' etc."
           important
         />
         <Input type="text" placeholder="NFT #" />
-      </div>
+      </div> */}
 
       {/* Description */}
-      <div className="mb-8">
+      {/* <div className="mb-8">
         <InputLabel
           title="Description"
           subTitle="The description of you individual NFTs, use the '{name}' variable in the description to add the NFTs name dynamically in the description."
           important
         />
         <Textarea placeholder="{name} - Generated and deployed on LaunchMyNFT." />
-      </div>
+      </div> */}
 
       <div className="mb-8 grid grid-cols-2 gap-5">
         <div>
@@ -111,15 +123,17 @@ export default function FormCollection() {
             type="number"
             placeholder="Enter your price"
             inputClassName="spin-button-hidden"
+            onChange={(e)=> onInput(e, 'price_per_mint')}
           />
         </div>
         <div>
-          <InputLabel title="Price" important />
+          <InputLabel title="Max. Supply" important />
           <Input
             min={0}
             type="number"
-            placeholder="Enter your price"
+            placeholder="Max. supply"
             inputClassName="spin-button-hidden"
+            onChange={(e)=> onInput(e, 'max_supply')}
           />
         </div>
       </div>
