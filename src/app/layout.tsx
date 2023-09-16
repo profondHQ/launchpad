@@ -8,6 +8,8 @@ import ModalsContainer from '@/components/modal-views/container';
 import DrawersContainer from '@/components/drawer-views/container';
 import SettingsButton from '@/components/settings/settings-button';
 import SettingsDrawer from '@/components/settings/settings-drawer';
+
+
 // base css file
 import 'overlayscrollbars/overlayscrollbars.css';
 import 'swiper/css';
@@ -15,6 +17,9 @@ import 'swiper/css/pagination';
 import '@/assets/css/scrollbar.css';
 import '@/assets/css/globals.css';
 import '@/assets/css/range-slider.css';
+import { WalletContextProvider } from '@/providers/WalletContextProvider';
+import SelectWalletModal from '@/components/sub-connect/SelectWalletModal';
+import SelectAccountModal from '@/components/sub-connect/SelectAccountModal';
 
 const fira_code = Fira_Code({
   weight: ['400', '500', '600', '700'],
@@ -44,15 +49,17 @@ export default function RootLayout({
       <body>
         <QueryClientProvider>
           <ThemeProvider>
-            <WagmiConfig>
+            <WalletContextProvider>
               <SettingsButton />
               <SettingsDrawer />
               <Suspense fallback={null}>
                 <ModalsContainer />
                 <DrawersContainer />
               </Suspense>
+              <SelectWalletModal theme={'dark'} />
+              <SelectAccountModal theme={'dark'} />
               {children}
-            </WagmiConfig>
+            </WalletContextProvider>
           </ThemeProvider>
         </QueryClientProvider>
       </body>
