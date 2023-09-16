@@ -147,7 +147,7 @@ export default function UploadAsset({metadataColl, setMetadataColl}: {metadataCo
             </div>
           </div>
           <div className='flex items-center justify-center w-full'>
-          <Button shape="rounded" className="mr-2" isLoading={loading} onClick={onUpload}>
+          <Button shape="rounded" variant="solid" color="primary" className="mr-2" isLoading={loading} onClick={onUpload}>
             {uploaded ? 'Uploaded' : 'Upload'}
           </Button>
           </div>

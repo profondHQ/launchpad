@@ -39,6 +39,7 @@ import { WalletContext } from '@/contexts';
 import { BN, stringCamelCase } from '@polkadot/util'
 import metadata_psp34 from '@/config/metadata/psp34';
 import { collectionConfig } from '@/config/collection';
+import { getMaxGasLimit } from '@/utils/common';
 
 export default function DeployNFT({metadataColl, setMetadataColl}: {metadataColl: any, setMetadataColl: any}) {
   const {selectedAccount, wallet} = useContext(WalletContext)
@@ -47,19 +48,22 @@ export default function DeployNFT({metadataColl, setMetadataColl}: {metadataColl
 
   const onDeployCollection = async()=>{
     setLoading(true)
-    const startAt = new Date(metadataColl.public_sale_start_at).getTime()
-    const endedAt = new Date(metadataColl.public_sale_end_at).getTime()
-    const pricePerMint = new BN(metadataColl.price_per_mint).mul(new BN((10 ** 18).toString()))
-    const maxSupply = parseInt(metadataColl.max_supply)
-
+    
     try{
+        const startAt = new Date(metadataColl.public_sale_start_at).getTime()
+        const endedAt = new Date(metadataColl.public_sale_end_at).getTime()
+        const pricePerMint = new BN(metadataColl.price_per_mint).mul(new BN((10 ** 18).toString())).toString()
+        const maxSupply = parseInt(metadataColl.max_supply)
+
+        console.log(metadataColl, startAt, endedAt, pricePerMint, maxSupply)
+
         const wsProvider = new WsProvider(RPC);
         const api = await ApiPromise.create({ provider: wsProvider })
         const signer = wallet?.signer
         api.setSigner(signer)
         const bluerprint = new BlueprintPromise(api, metadata_psp34, collectionConfig.code_hash)
         const tx = bluerprint.tx[stringCamelCase('new')]({
-        gasLimit: '4000',
+        gasLimit: api.registry.createType('WeightV2', getMaxGasLimit(api)) as any,
         storageDepositLimit: null,
         value: 0
       }, ...(metadataColl && [

@@ -1,5 +1,8 @@
 import { collectionConfig } from "@/config/collection"
+import { ApiPromise } from "@polkadot/api"
 import { Web3Storage } from "web3.storage"
+import { BN, stringCamelCase, bnToBn } from '@polkadot/util'
+import type { WeightV2 } from '@polkadot/types/interfaces'
 
 export const prettyTruncate = (str = '', len = 8, type: string) => {
 	if (str && str.length > len) {
@@ -45,4 +48,31 @@ export const saveJson = (obj:any, title:string)=> {
 	var event = document.createEvent( 'MouseEvents' );
 	event.initMouseEvent( 'click', true, true, window, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
 	link.dispatchEvent( event );
+}
+
+export const getGasLimit = (api: ApiPromise, _refTime: string | BN, _proofSize: string | BN) => {
+	const refTime = bnToBn(_refTime)
+	const proofSize = bnToBn(_proofSize)
+
+	return api.registry.createType('WeightV2', {
+		refTime,
+		proofSize,
+	}) as WeightV2
+}
+
+export const getMaxGasLimit = (api: ApiPromise, reductionFactor = 0.8) => {
+	const blockWeights = api.consts.system.blockWeights.toPrimitive() as any
+	const maxExtrinsic = blockWeights?.perClass?.normal?.maxExtrinsic
+	const maxRefTime = maxExtrinsic?.refTime
+		? bnToBn(maxExtrinsic.refTime)
+				.mul(new BN(reductionFactor * 100))
+				.div(new BN(100))
+		: new BN(0)
+	const maxProofSize = maxExtrinsic?.proofSize
+		? bnToBn(maxExtrinsic.proofSize)
+				.mul(new BN(reductionFactor * 100))
+				.div(new BN(100))
+		: new BN(0)
+
+	return getGasLimit(api, maxRefTime, maxProofSize)
 }

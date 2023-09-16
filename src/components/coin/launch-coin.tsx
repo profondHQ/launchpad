@@ -13,7 +13,9 @@ import metadata_psp22 from '@/config/metadata/psp22';
 import { coinConfig } from '@/config/coin';
 import { Check } from '../icons/check';
 import { WalletContext } from '@/contexts';
-import { BN, stringCamelCase } from '@polkadot/util'
+import { BN, stringCamelCase, bnToBn } from '@polkadot/util'
+import type { WeightV2 } from '@polkadot/types/interfaces'
+import { getMaxGasLimit } from '@/utils/common';
 
 export default function LaunchCoin() {
   const {selectedAccount, wallet} = useContext(WalletContext)
@@ -53,7 +55,7 @@ export default function LaunchCoin() {
         api.setSigner(signer)
         const bluerprint = new BlueprintPromise(api, metadata_psp22, coinConfig.code_hash)
         const tx = bluerprint.tx[stringCamelCase('new')]({
-        gasLimit: '4000',
+        gasLimit: api.registry.createType('WeightV2', getMaxGasLimit(api)) as any,
         storageDepositLimit: null,
         value: 0
       }, ...(metadataCoin && [totalSupply, metadataCoin.name, metadataCoin.symbol, metadataCoin.decimals, metadataCoin.is_pausable, metadataCoin.is_mintable, metadataCoin.is_burnable]))
@@ -201,8 +203,10 @@ export default function LaunchCoin() {
         </div>
       </div>
 
-      <Button shape="rounded" onClick={onSubmit} isLoading={loading} className='flex items-center'>
-        {submitted ? <span><Check color="green"/> Submitted</span> : `SUBMIT`}
+      <Button shape="rounded" onClick={onSubmit} isLoading={loading}>
+        {submitted ? 
+          <span className='flex items-center'><Check color="green" className='inline mr-2'/> Submitted</span> 
+        : `SUBMIT`}
         </Button>
     </div>
   );
