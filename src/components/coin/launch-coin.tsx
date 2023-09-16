@@ -201,7 +201,7 @@ export default function LaunchCoin() {
         </div>
       </div>
 
-      <Button shape="rounded" onClick={onSubmit} isLoading={loading}>
+      <Button shape="rounded" onClick={onSubmit} isLoading={loading} className='flex items-center'>
         {submitted ? <span><Check color="green"/> Submitted</span> : `SUBMIT`}
         </Button>
     </div>
