@@ -37,11 +37,11 @@ export default function WalletConnect({
         <div className="flex items-center gap-3 sm:gap-6 lg:gap-8">
           <div className="relative flex-shrink-0">
             <Menu>
-              <Menu.Button className="flex items-center overflow-hidden rounded-full shadow-main transition-all hover:-translate-y-0.5 hover:shadow-large bg-white py-2 px-3 space-x-2">
+              <Menu.Button className="flex items-center overflow-hidden rounded-full shadow-main transition-all hover:-translate-y-0.5 hover:shadow-large bg-white dark:bg-gray-900 dark:hover:bg-gray-800 py-2 px-3 space-x-2">
                 <div className='bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-10 w-10 rounded-full'></div>
                 <div className='flex flex-col items-start'>
-                  <p className='text-gray-700 dark:text-white font-semibold'>{walletContext.selectedAccount.name}</p>
-                  <p className='text-slate-700 dark:text-gray-300 text-xs'>{prettyTruncate(walletContext.selectedAccount.address, 12, 'address')}</p>
+                  <p className='text-gray-900 dark:text-white font-semibold'>{walletContext.selectedAccount.name}</p>
+                  <p className='text-gray-600 dark:text-gray-400 text-xs'>{prettyTruncate(walletContext.selectedAccount.address, 12, 'address')}</p>
                 </div>
               </Menu.Button>
               <Transition
