@@ -34,4 +34,9 @@ export const defaultMenuItems = [
       },
     ],
   },
+  {
+    name: 'Profile',
+    icon: <CompassIcon />,
+    href: routes.profile,
+  },
 ];

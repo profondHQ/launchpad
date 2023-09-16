@@ -6,26 +6,20 @@ import { authorData } from '@/data/static/author';
 
 const AuthorProfilePage = () => {
   return (
-    <>
-      <div className="relative h-36 w-full overflow-hidden rounded-lg sm:h-44 md:h-64 xl:h-80 2xl:h-96 3xl:h-[448px]">
-        <Image
-          src={authorData?.cover_image?.thumbnail}
-          placeholder="blur"
-          quality={100}
-          className="!h-full w-full !object-cover"
-          alt="Cover Image"
-        />
-      </div>
-      <div className="mx-auto flex w-full shrink-0 flex-col md:px-4 xl:px-6 3xl:max-w-[1700px] 3xl:px-12">
+    <div className="mx-auto w-full sm:pt-0 lg:px-8 xl:px-10 2xl:px-0">
+      <div className="flex flex-col items-center justify-center">
         <Avatar
           size="xl"
           image={authorData?.avatar?.thumbnail}
           alt="Author"
-          className="z-10 mx-auto -mt-12 dark:border-gray-500 sm:-mt-14 md:mx-0 md:-mt-16 xl:mx-0 3xl:-mt-20"
+          className="mx-auto dark:border-gray-500"
         />
+        <h2 className="mt-5 text-xl font-medium tracking-tighter text-gray-900 dark:text-white xl:text-2xl">
+          {authorData?.name}
+        </h2>
         <Profile />
       </div>
-    </>
+    </div>
   );
 };
 

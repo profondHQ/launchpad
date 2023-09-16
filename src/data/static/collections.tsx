@@ -17,6 +17,8 @@ import CollectionImage3 from '@/assets/images/collection/collection-3.jpg';
 import CollectionImage4 from '@/assets/images/collection/collection-4.jpg';
 import CollectionImage5 from '@/assets/images/collection/collection-5.jpg';
 import CollectionImage6 from '@/assets/images/collection/collection-6.jpg';
+import Binance from '@/assets/images/coin/binance.svg';
+import Bitcoin from '@/assets/images/coin/bitcoin.svg';
 export const collections = [
   {
     id: 1,
@@ -128,6 +130,80 @@ export const collections = [
       avatar: User2,
       name: 'Cameronwilliamson',
       slug: 'cameronwilliamson',
+    },
+  },
+];
+export const newCollections = [
+  {
+    id: 1,
+    name: 'Artbyck',
+    slug: 'nft-details',
+    title: 'Intutive Motion',
+    cover_image: CollectionCover1,
+    description: 'description',
+    image: CollectionImage1,
+    user: {
+      avatar: User1,
+      name: 'Cameronwilliamson',
+      slug: 'cameronwilliamson',
+    },
+    chain: {
+      name: 'BNB',
+      image: Binance,
+    },
+  },
+  {
+    id: 2,
+    name: 'Artbyck',
+    slug: 'nft-details',
+    title: 'Intutive Motion',
+    cover_image: CollectionCover2,
+    description: 'description',
+    image: CollectionImage2,
+    user: {
+      avatar: User2,
+      name: 'Cameronwilliamson',
+      slug: 'cameronwilliamson',
+    },
+    chain: {
+      name: 'BTC',
+      image: Bitcoin,
+    },
+  },
+  {
+    id: 3,
+    name: 'Artbyck',
+    slug: 'nft-details',
+    title: 'Intutive Motion',
+    cover_image: CollectionCover3,
+    description: 'description',
+    image: CollectionImage3,
+    user: {
+      avatar: User3,
+      name: 'Cameronwilliamson',
+      slug: 'cameronwilliamson',
+    },
+    chain: {
+      name: 'BNB',
+      image: Binance,
+    },
+  },
+  {
+    id: 4,
+    name: 'Artbyck',
+    slug: 'nft-details',
+    title: 'Intutive Motion',
+    cover_image: CollectionCover3,
+    description: 'description',
+    image: CollectionImage3,
+    user: {
+      avatar: User3,
+      name: 'Cameronwilliamson',
+      slug: 'cameronwilliamson',
+    },
+    chain: {
+      name: 'BNB',
+      image: Binance,
     },
   },
 ];
