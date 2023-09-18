@@ -12,6 +12,7 @@ import Loader from '@/components/ui/loader';
 import axios from 'axios';
 import { API_URL } from '@/config/common';
 import { WalletContext } from '@/contexts';
+import { useInkathon } from '@scio-labs/use-inkathon';
 
 const tabMenu = [
   {
@@ -25,7 +26,8 @@ const tabMenu = [
 ];
 
 export default function ProfileTab() {
-  const {selectedAccount} = useContext(WalletContext)
+  // const {selectedAccount} = useContext(WalletContext)
+  const {activeAccount} = useInkathon()
   const [myColls, setMyColls] = useState<any|null>(null)
   const [myCoins, setMyCoins] = useState<any|null>(null)
 
@@ -50,11 +52,11 @@ export default function ProfileTab() {
   }
 
   useEffect(()=>{
-    if(selectedAccount){
+    if(activeAccount){
       getMyColls()
       getMyCoins()
     }
-  },[selectedAccount])
+  },[activeAccount])
 
   console.log(myCoins)
 

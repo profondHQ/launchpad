@@ -17,9 +17,10 @@ import 'swiper/css/pagination';
 import '@/assets/css/scrollbar.css';
 import '@/assets/css/globals.css';
 import '@/assets/css/range-slider.css';
-import { WalletContextProvider } from '@/providers/WalletContextProvider';
+// import { WalletContextProvider } from '@/providers/WalletContextProvider';
 import SelectWalletModal from '@/components/sub-connect/SelectWalletModal';
 import SelectAccountModal from '@/components/sub-connect/SelectAccountModal';
+import InkathonWalletContextProvider from '@/providers/InkathonWalletContextProvider';
 
 const fira_code = Fira_Code({
   weight: ['400', '500', '600', '700'],
@@ -49,17 +50,19 @@ export default function RootLayout({
       <body>
         <QueryClientProvider>
           <ThemeProvider>
-            <WalletContextProvider>
-              <SettingsButton />
-              <SettingsDrawer />
-              <Suspense fallback={null}>
-                <ModalsContainer />
-                <DrawersContainer />
-              </Suspense>
-              <SelectWalletModal theme={'dark'} />
-              <SelectAccountModal theme={'dark'} />
-              {children}
-            </WalletContextProvider>
+            {/* <WalletContextProvider> */}
+              <InkathonWalletContextProvider>
+                <SettingsButton />
+                <SettingsDrawer />
+                <Suspense fallback={null}>
+                  <ModalsContainer />
+                  <DrawersContainer />
+                </Suspense>
+                <SelectWalletModal theme={'dark'} />
+                <SelectAccountModal theme={'dark'} />
+                {children}
+              </InkathonWalletContextProvider>
+            {/* </WalletContextProvider> */}
           </ThemeProvider>
         </QueryClientProvider>
       </body>

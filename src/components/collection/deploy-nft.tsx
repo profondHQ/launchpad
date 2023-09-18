@@ -35,16 +35,18 @@ import { RPC } from '@/config/common';
 import metadata_psp22 from '@/config/metadata/psp22';
 import { coinConfig } from '@/config/coin';
 import { Check } from '../icons/check';
-import { WalletContext } from '@/contexts';
+// import { WalletContext } from '@/contexts';
 import { BN, stringCamelCase } from '@polkadot/util'
 import metadata_psp34 from '@/config/metadata/psp34';
 import { collectionConfig } from '@/config/collection';
 import { getMaxGasLimit } from '@/utils/common';
+import { useInkathon } from '@scio-labs/use-inkathon';
 
 export default function DeployNFT({metadataColl, setMetadataColl}: {metadataColl: any, setMetadataColl: any}) {
-  const {selectedAccount, wallet} = useContext(WalletContext)
+  // const {selectedAccount, wallet} = useContext(WalletContext)
   const [deployed, setDeployed] = useState(false)
   const [loading, setLoading] = useState(false)
+  const {activeSigner, activeAccount} = useInkathon()
 
   const onDeployCollection = async()=>{
     setLoading(true)
@@ -55,11 +57,9 @@ export default function DeployNFT({metadataColl, setMetadataColl}: {metadataColl
         const pricePerMint = new BN(metadataColl.price_per_mint).mul(new BN((10 ** 18).toString())).toString()
         const maxSupply = parseInt(metadataColl.max_supply)
 
-        console.log(metadataColl, startAt, endedAt, pricePerMint, maxSupply)
-
         const wsProvider = new WsProvider(RPC);
         const api = await ApiPromise.create({ provider: wsProvider })
-        const signer = wallet?.signer
+        const signer = activeSigner
         api.setSigner(signer)
         const bluerprint = new BlueprintPromise(api, metadata_psp34, collectionConfig.code_hash)
         const tx = bluerprint.tx[stringCamelCase('new')]({
@@ -82,7 +82,7 @@ export default function DeployNFT({metadataColl, setMetadataColl}: {metadataColl
         metadataColl.project_treasury,
         metadataColl.launchpad_treasury
       ]))
-      await tx.signAndSend(selectedAccount?.address, async(result: any)=> {
+      await tx.signAndSend(activeAccount?.address as string, async(result: any)=> {
         if (result.status.isInBlock || result.status.isFinalized) {
           setLoading(false)
           setDeployed(true)

@@ -16,11 +16,13 @@ import { WalletContext } from '@/contexts';
 import { BN, stringCamelCase, bnToBn } from '@polkadot/util'
 import type { WeightV2 } from '@polkadot/types/interfaces'
 import { getMaxGasLimit } from '@/utils/common';
+import { useInkathon } from '@scio-labs/use-inkathon';
 
 export default function LaunchCoin() {
-  const {selectedAccount, wallet} = useContext(WalletContext)
+  // const {selectedAccount, wallet} = useContext(WalletContext)
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const {activeSigner, activeAccount} = useInkathon()
   const [metadataCoin, setMetadataCoin] = useState({
     total_supply: 0,
     name: '',
@@ -51,7 +53,7 @@ export default function LaunchCoin() {
         const totalSupply = new BN(metadataCoin.total_supply).mul(new BN((10 ** metadataCoin.decimals).toString()))
         const wsProvider = new WsProvider(RPC);
         const api = await ApiPromise.create({ provider: wsProvider })
-        const signer = wallet?.signer
+        const signer = activeSigner
         api.setSigner(signer)
         const bluerprint = new BlueprintPromise(api, metadata_psp22, coinConfig.code_hash)
         const tx = bluerprint.tx[stringCamelCase('new')]({
@@ -59,7 +61,7 @@ export default function LaunchCoin() {
         storageDepositLimit: null,
         value: 0
       }, ...(metadataCoin && [totalSupply, metadataCoin.name, metadataCoin.symbol, metadataCoin.decimals, metadataCoin.is_pausable, metadataCoin.is_mintable, metadataCoin.is_burnable]))
-      await tx.signAndSend(selectedAccount?.address, async(result: any)=> {
+      await tx.signAndSend(activeAccount?.address as string, async(result: any)=> {
         if (result.status.isInBlock || result.status.isFinalized) {
           console.log(result)
           setLoading(false)

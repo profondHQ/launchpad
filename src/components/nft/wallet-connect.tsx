@@ -10,9 +10,11 @@ import ActiveLink from '@/components/ui/links/active-link';
 import { ChevronForward } from '@/components/icons/chevron-forward';
 import { PowerIcon } from '@/components/icons/power';
 import { OpenSelectAccount, OpenSelectWallet, WalletContext } from '@/contexts/index';
-import { useContext } from 'react';
-import { useModal } from '../modal-views/context';
+import { useContext, useEffect } from 'react';
+// import { useModal } from '../modal-views/context';
 import { prettyTruncate } from '@/utils/common';
+import { useInkathon } from '@scio-labs/use-inkathon';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 
 export default function WalletConnect({
   btnClassName,
@@ -25,23 +27,36 @@ export default function WalletConnect({
   // TODO: Balance fetching for selected chains
   // TODO: Select chains
 
-  const walletContext = useContext(WalletContext);
+  // const walletContext = useContext(WalletContext);
   const accountContext = useContext(OpenSelectAccount)
-  const firstAccount = walletContext.accounts?.[0];
-  const selectWallet = useContext(OpenSelectWallet);
-  const disconnect = () => { selectWallet.open() };
+  // const firstAccount = walletContext.accounts?.[0];
+  const walletContext = useContext(OpenSelectWallet);
+  // const disconnect = () => { selectWallet.open() };
+  const [wallet] = useLocalStorage('wallet');
+  const [chain] = useLocalStorage('chain');
+
+  const {activeAccount, isConnected, disconnect, activeExtension, activeChain, setActiveAccount, switchActiveChain } = useInkathon()
+
+  const anyOnLocal = async()=>{
+    if(wallet) setActiveAccount?.(JSON.parse(wallet))
+    if(chain) await switchActiveChain?.(JSON.parse(chain))
+}    
+
+  useEffect(()=>{
+      anyOnLocal()
+  },[chain, wallet])
 
   return (
     <>
-      {firstAccount ? (
+      {isConnected && activeAccount ? (
         <div className="flex items-center gap-3 sm:gap-6 lg:gap-8">
           <div className="relative flex-shrink-0">
             <Menu>
               <Menu.Button className="flex items-center overflow-hidden rounded-full shadow-main transition-all hover:-translate-y-0.5 hover:shadow-large bg-white dark:bg-gray-900 dark:hover:bg-gray-800 py-2 px-3 space-x-2">
                 <div className='bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-10 w-10 rounded-full'></div>
                 <div className='flex flex-col items-start'>
-                  <p className='text-gray-900 dark:text-white font-semibold'>{walletContext.selectedAccount.name}</p>
-                  <p className='text-gray-600 dark:text-gray-400 text-xs'>{prettyTruncate(walletContext.selectedAccount.address, 12, 'address')}</p>
+                  <p className='text-gray-900 dark:text-white font-semibold'>{activeAccount.name}</p>
+                  <p className='text-gray-600 dark:text-gray-400 text-xs'>{prettyTruncate(activeAccount.address, 12, 'address')}</p>
                 </div>
               </Menu.Button>
               <Transition
@@ -75,7 +90,7 @@ export default function WalletConnect({
                             Name
                           </span>
                           <span className="rounded-lg bg-gray-100 px-2 py-1 text-sm tracking-tighter dark:bg-gray-800">
-                            {walletContext.selectedAccount?.name}
+                            {activeAccount.name}
                           </span>
                         </div>
                         <div className="flex items-center justify-between gap-3">
@@ -83,10 +98,26 @@ export default function WalletConnect({
                             Address
                           </span>
                           <span className="rounded-lg bg-gray-100 px-2 py-1 text-sm tracking-tighter dark:bg-gray-800">
-                            {prettyTruncate(walletContext.selectedAccount?.address, 15, 'address')}
+                            {prettyTruncate(activeAccount.address, 15, 'address')}
                             {/* {firstAccount.address.slice(0, 6)}
                             {'...'}
                             {firstAccount.address.slice(firstAccount.address.length - 6)} */}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between gap-3 my-1">
+                          <span className="text-sm font-medium -tracking-tighter text-gray-600 dark:text-gray-400">
+                            Wallet
+                          </span>
+                          <span className="rounded-lg bg-gray-100 px-2 py-1 text-sm tracking-tighter dark:bg-gray-800">
+                            {activeExtension?.name}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between gap-3 my-1">
+                          <span className="text-sm font-medium -tracking-tighter text-gray-600 dark:text-gray-400">
+                            Chain
+                          </span>
+                          <span className="rounded-lg bg-gray-100 px-2 py-1 text-sm tracking-tighter dark:bg-gray-800">
+                            {activeChain?.name}
                           </span>
                         </div>
                       </div>
@@ -106,10 +137,28 @@ export default function WalletConnect({
                     </div>
                   </Menu.Item>
                   <Menu.Item>
+                    <div className="border-b border-dashed border-gray-200 p-3 dark:border-gray-700">
+                      <div
+                        className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-900 transition hover:bg-gray-50 dark:text-white dark:hover:bg-gray-800"
+                        onClick={() => walletContext.open()}
+                      >
+                        <span className="grow uppercase">
+                          Change Chain and wallet
+                        </span>
+                        <ChevronForward />
+                      </div>
+                    </div>
+                  </Menu.Item>
+                  <Menu.Item>
                     <div className="p-3">
                       <div
                         className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-900 transition hover:bg-gray-50 dark:text-white dark:hover:bg-gray-800"
-                        onClick={() => disconnect()}
+                        onClick={() => {
+                          localStorage.removeItem('wallet')
+                          localStorage.removeItem('chain')
+                          disconnect?.()
+                          window.location.reload()
+                        }}
                       >
                         <PowerIcon />
                         <span className="grow uppercase">Disconnect</span>
@@ -131,7 +180,7 @@ export default function WalletConnect({
         </div >
       ) : (
         <Button
-          onClick={() => selectWallet.open()}
+          onClick={() => walletContext.open()}
           className={cn('shadow-main hover:shadow-large', btnClassName)}
         >
           CONNECT

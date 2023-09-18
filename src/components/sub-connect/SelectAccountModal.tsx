@@ -3,10 +3,11 @@
 import { Modal } from "antd"
 import SelectAccount from "./SelectAccount"
 import { useContext } from "react";
-import { OpenSelectAccount, WalletContext } from "@/contexts";
+import { OpenSelectAccount } from "@/contexts";
 import { WalletAccount } from "@subwallet/wallet-connect/types";
 import './SelectAccount.scss';
 import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { useInkathon } from "@scio-labs/use-inkathon";
 
 interface Props {
   theme: string;
@@ -14,11 +15,12 @@ interface Props {
 
 const SelectAccountModal = ({theme}: Props): React.ReactElement<Props> => {
   const openSelectAccountContext = useContext(OpenSelectAccount)
-  const walletContext = useContext(WalletContext)
+  // const walletContext = useContext(WalletContext)
   const [selectedLocalAccount, setSelectedLocalAccount] = useLocalStorage('selected-account');
+  const {setActiveAccount} = useInkathon()
 
   const onSelectAccount = (account: WalletAccount)=>{
-    walletContext.setSelectedAccount?.(account)
+    setActiveAccount?.(account)
     setSelectedLocalAccount(JSON.stringify(account))
     openSelectAccountContext.close()
   }
