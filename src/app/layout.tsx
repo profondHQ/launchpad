@@ -9,7 +9,6 @@ import DrawersContainer from '@/components/drawer-views/container';
 import SettingsButton from '@/components/settings/settings-button';
 import SettingsDrawer from '@/components/settings/settings-drawer';
 
-
 // base css file
 import 'overlayscrollbars/overlayscrollbars.css';
 import 'swiper/css';
