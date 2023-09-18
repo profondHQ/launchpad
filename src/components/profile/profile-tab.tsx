@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+import { Suspense, useContext, useEffect, useState } from 'react';
 import ParamTab, { TabPanel } from '@/components/ui/param-tab';
 import TransactionSearchForm from '@/components/author/transaction-search-form';
 import TransactionHistory from '@/components/author/transaction-history';
@@ -9,6 +9,10 @@ import { useLayout } from '@/lib/hooks/use-layout';
 import { newCollections } from '@/data/static/collections';
 import { myCoin } from '@/data/static/author-profile';
 import Loader from '@/components/ui/loader';
+import axios from 'axios';
+import { API_URL } from '@/config/common';
+import { WalletContext } from '@/contexts';
+import { useInkathon } from '@scio-labs/use-inkathon';
 
 const tabMenu = [
   {
@@ -22,15 +26,47 @@ const tabMenu = [
 ];
 
 export default function ProfileTab() {
+  // const {selectedAccount} = useContext(WalletContext)
+  const {activeAccount} = useInkathon()
+  const [myColls, setMyColls] = useState<any|null>(null)
+  const [myCoins, setMyCoins] = useState<any|null>(null)
+
+  const getMyColls = async()=>{
+    const res = await axios.get(API_URL + '/collections', 
+    // {params: {
+    //   owner_address: selectedAccount?.address
+    // }}
+    )
+    setMyColls(res.data)
+  }
+
+  const getMyCoins = async()=>{
+    const res = await axios.get(API_URL + '/coins', 
+    // {params: 
+    //   {
+    //   minter_address: selectedAccount?.address
+    //   }
+    // }
+  )
+    setMyCoins(res.data)
+  }
+
+  useEffect(()=>{
+    if(activeAccount){
+      getMyColls()
+      getMyCoins()
+    }
+  },[activeAccount])
+
   return (
     <Suspense fallback={<Loader variant="blink" />}>
       <ParamTab tabMenu={tabMenu}>
         <TabPanel className="focus:outline-none">
           <div className="grid gap-4 xs:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 lg:gap-5 xl:gap-6 3xl:grid-cols-3 4xl:grid-cols-4">
-            {newCollections?.map((collection) => (
+            {myColls?.map((collection:any, idx:number) => (
               <CollectionCard
                 item={collection}
-                key={`collection-key-${collection?.id}`}
+                key={`collection-key-${collection.contract_address}`}
               />
             ))}
           </div>
@@ -38,11 +74,12 @@ export default function ProfileTab() {
         <TabPanel className="focus:outline-none">
           <div className="space-y-8 md:space-y-10 xl:space-y-12">
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1">
-              {myCoin?.map((coin) => (
+              {myCoins?.map((coin:any) => (
                 <CoinList
-                  key={`coin-${coin?.id}`}
+                  key={`coin-${coin?.contract_address}`}
                   name={coin.name}
-                  supply={coin.supply}
+                  symbol={coin.symbol}
+                  supply={coin.total_supply}
                 />
               ))}
             </div>

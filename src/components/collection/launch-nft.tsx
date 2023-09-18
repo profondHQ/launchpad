@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import cn from 'classnames';
 import { Transition } from '@/components/ui/transition';
 import { Listbox } from '@/components/ui/listbox';
@@ -28,6 +28,7 @@ import AuthorImage from '@/assets/images/author.jpg';
 import NFT1 from '@/assets/images/nft/nft-1.jpg';
 import PriceType from '@/components/create-nft/price-types-props';
 import { CheckmarkIcon } from '@/components/icons/checkmark';
+import { WalletContext } from '@/contexts';
 
 const BlockchainOptions = [
   {
@@ -45,6 +46,7 @@ const BlockchainOptions = [
 ];
 
 export default function LauchNFT() {
+  const {selectedAccount} = useContext(WalletContext)
   const stepMenu = [
     {
       id: 1,
@@ -64,6 +66,18 @@ export default function LauchNFT() {
     },
   ];
   const [step, setStep] = useState(1);
+  const [metadataColl, setMetadataColl] = useState({
+    name: '',
+    symbol: '',
+    base_uri: '',
+    max_supply: 0,
+    price_per_mint: 0,
+    public_sale_start_at: 0,
+    public_sale_end_at: 0,
+    launchpad_fee: 0,
+    project_treasury: selectedAccount?.address,
+    launchpad_treasury: selectedAccount?.address,
+  })
 
   const handleBack = () => {
     setStep(step - 1);
@@ -71,6 +85,17 @@ export default function LauchNFT() {
   const handleNext = () => {
     setStep(step + 1);
   };
+
+  useEffect(()=>{
+    if(selectedAccount){
+      setMetadataColl({
+        ...metadataColl,
+        project_treasury: selectedAccount?.address,
+        launchpad_treasury: selectedAccount?.address
+      })
+    }
+  },[selectedAccount])
+
   return (
     <>
       <div className="mx-auto w-full sm:pt-0 lg:px-8 xl:px-10 2xl:px-0">
@@ -112,9 +137,9 @@ export default function LauchNFT() {
           </ol>
         </div>
 
-        {step === 1 && <FormCollection />}
-        {step === 2 && <UploadAsset />}
-        {step === 3 && <DeployNFT />}
+        {step === 1 && <FormCollection metadataColl={metadataColl} setMetadataColl={setMetadataColl} />}
+        {step === 2 && <UploadAsset metadataColl={metadataColl} setMetadataColl={setMetadataColl} />}
+        {step === 3 && <DeployNFT metadataColl={metadataColl} setMetadataColl={setMetadataColl} />}
 
         {step > 1 && (
           <Button shape="rounded" className="mr-2" onClick={handleBack}>

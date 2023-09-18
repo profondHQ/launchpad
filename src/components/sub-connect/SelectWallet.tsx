@@ -2,65 +2,64 @@
 // SPDX-License-Identifier: Apache-2.0
 'use client';
 
-import { getWallets } from '@subwallet/wallet-connect/dotsama/wallets';
-import { getEvmWallets } from '@subwallet/wallet-connect/evm/evmWallets';
-import { EvmWallet, Wallet } from '@subwallet/wallet-connect/types';
-import React, { useCallback } from 'react';
+import { SubstrateChain, SubstrateWallet, allSubstrateChains, allSubstrateWallets, isWalletInstalled } from '@scio-labs/use-inkathon';
+// import { getWallets } from '@subwallet/wallet-connect/dotsama/wallets';
+// import { getEvmWallets } from '@subwallet/wallet-connect/evm/evmWallets';
+// import { EvmWallet, Wallet } from '@subwallet/wallet-connect/types';
+import React, { useState } from 'react';
+import Button from '../ui/button';
+import { Check } from '../icons/check';
 
 require('./SelectWallet.scss');
 
 interface Props {
-    onSelectWallet: (walletKey: string, walletType?: 'substrate' | 'evm') => void
+    // onSelectWallet: (walletKey: string, walletType?: 'substrate' | 'evm') => void
+    onSelectWallet: (chain?: SubstrateChain, wallet?: SubstrateWallet) => void
 }
 
 function SelectWallet({ onSelectWallet }: Props): React.ReactElement<Props> {
-    const dotsamaWallets = getWallets();
-    const evmWallets = getEvmWallets();
+    const [selectedChain, setSelectedChain] = useState<SubstrateChain|undefined>(undefined)
+    const [selectedWallet, setSelectedWallet] = useState<SubstrateWallet|undefined>(undefined)
 
-    const onClickDotsamaWallet = useCallback(
-        (wallet: Wallet | EvmWallet) => {
-            return () => {
-                if (wallet.installed) {
-                    onSelectWallet(wallet.extensionName);
-                }
-            };
-        },
-        [onSelectWallet]
-    );
-
-    const onClickEvmWallet = useCallback(
-        (wallet: Wallet | EvmWallet) => {
-            return () => {
-                if (wallet.installed) {
-                    onSelectWallet(wallet.extensionName, 'evm');
-                }
-            };
-        },
-        [onSelectWallet]
-    );
-
-    const walletItem: (wallet: Wallet | EvmWallet, onSelect: (wallet: Wallet | EvmWallet) => () => void) => React.ReactElement = (wallet, onSelect) => (
+    const chainItem: (chain: SubstrateChain) => React.ReactElement = (chain) => (
         <div
             className={'wallet-item'}
-            key={wallet.extensionName}
-            onClick={onSelect(wallet)}
+            key={chain.name}
+            onClick={()=> setSelectedChain(chain)}
+        >
+            <div className={'wallet-title'}>
+                {chain.name}
+            </div>
+            <div className={'wallet-install flex items-center'}>
+                {selectedChain?.name === chain.name && <Check color='green' width={18} height={18} className='inline mx-2' />}
+                {chain.testnet && 'testnet'}
+            </div>
+        </div>
+    );
+
+    const walletItem: (wallet: SubstrateWallet) => React.ReactElement = (wallet) => (
+        <div
+            className={'wallet-item'}
+            key={wallet.id}
+            onClick={()=> setSelectedWallet(wallet)}
         >
             <div>
                 <img
-                    alt={wallet.logo?.alt}
+                    alt={wallet.id}
                     className={'wallet-logo'}
                     // @ts-ignore
-                    src={wallet.logo?.src?.src}
+                    src={wallet.logoUrls[0]}
                 />
             </div>
             <div className={'wallet-title'}>
-                {wallet.title}
+                {wallet.name}
             </div>
-            <div className={'wallet-install'}>
-                {wallet.installed
+            <div className={'wallet-install flex items-center'}>
+                {selectedWallet?.id === wallet.id && <Check color='green' width={18} height={18} className='inline mx-2' />}
+                {isWalletInstalled(wallet)
                     ? ''
                     : (<a
-                        href={wallet.installUrl}
+                        href={wallet.urls.chromeExtension}
                         rel='noreferrer'
                         target='_blank'
                     >
@@ -72,18 +71,29 @@ function SelectWallet({ onSelectWallet }: Props): React.ReactElement<Props> {
 
     return <div className={'select-wallet-wrapper'}>
         <div className={'select-wallet-content'}>
-            <div className='dotsama-wallet-list'>
+            <div className='dotsama-wallet-list mb-4'>
                 <div className='wallet-cat-title'>
-                    Dotsama Wallets
+                    Substrate Chains
                 </div>
-                {dotsamaWallets.map((wallet) => (walletItem(wallet, onClickDotsamaWallet)))}
+                <div className='overflow-y-auto max-h-52'>
+                    {allSubstrateChains.map((chain) => (chainItem(chain)))}
+                </div>
             </div>
-            <div className='evm-wallet-list'>
+            <div className='dotsama-wallet-list mb-4'>
+                <div className='wallet-cat-title'>
+                    Substrate Wallets
+                </div>
+                <div className='overflow-y-auto max-h-52'>
+                    {allSubstrateWallets.map((wallet) => (walletItem(wallet)))}
+                </div>
+            </div>
+            <Button disabled={!selectedChain || !selectedWallet} variant="solid" color="primary" className='w-full' onClick={()=> onSelectWallet(selectedChain, selectedWallet)}>Select</Button>
+            {/* <div className='evm-wallet-list'>
                 <div className='wallet-cat-title'>
                     EVM Wallets
                 </div>
                 {evmWallets.map((wallet) => (walletItem(wallet, onClickEvmWallet)))}
-            </div>
+            </div> */}
         </div>
     </div>;
 }

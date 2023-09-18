@@ -4,33 +4,32 @@
 
 import './SelectWallet.scss';
 
-import { getWalletBySource } from '@subwallet/wallet-connect/dotsama/wallets';
-import { getEvmWalletBySource } from '@subwallet/wallet-connect/evm/evmWallets';
 import { Modal } from 'antd';
-import React, { useCallback, useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 
-import { OpenSelectWallet, WalletContext } from '@/contexts';
+import { OpenSelectWallet } from '@/contexts';
 import SelectWallet from './SelectWallet';
+import { SubstrateChain, SubstrateWallet, useInkathon } from '@scio-labs/use-inkathon';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 
 interface Props {
     theme: string;
 }
 
 function SelectWalletModal({ theme }: Props): React.ReactElement<Props> {
-    const openSelectWalletContext = useContext(OpenSelectWallet);
-    const walletContext = useContext(WalletContext);
-    const onSelectWallet = useCallback(
-        (walletKey: unknown, walletType: 'substrate' | 'evm' = 'substrate') => {
-            if (walletType === 'substrate') {
-                walletContext.setWallet(getWalletBySource(walletKey), walletType);
-                openSelectWalletContext.close();
-            } else {
-                walletContext.setWallet(getEvmWalletBySource(walletKey), walletType);
-                openSelectWalletContext.close();
-            }
-        },
-        [openSelectWalletContext, walletContext]
-    );
+    const openSelectWalletContext = useContext(OpenSelectWallet)
+    const [wallet, setWallet] = useLocalStorage('wallet');
+    const [chain, setChain] = useLocalStorage('chain');
+    const {connect} = useInkathon()
+
+
+
+    const onSelectWallet = async(chain?: SubstrateChain, wallet?: SubstrateWallet)=> {
+        await connect?.(chain, wallet)
+        setChain(JSON.stringify(chain))
+        setWallet(JSON.stringify(wallet))
+        openSelectWalletContext.close()
+    }
 
     return <Modal
         centered
