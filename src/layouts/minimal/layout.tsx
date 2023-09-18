@@ -17,6 +17,7 @@ import { useWindowScroll } from '@/lib/hooks/use-window-scroll';
 import { useLayout } from '@/lib/hooks/use-layout';
 import routes from '@/config/routes';
 import { LAYOUT_OPTIONS } from '@/lib/constants';
+import { useInkathon } from '@scio-labs/use-inkathon';
 
 function NotificationButton() {
   const isMounted = useIsMounted();
@@ -43,11 +44,12 @@ function HeaderRightArea() {
   const isMounted = useIsMounted();
   const breakpoint = useBreakpoint();
   const { openDrawer, isOpen } = useDrawer();
+  const {isConnected} = useInkathon()
 
   return (
     <div className="order-last flex shrink-0 items-center">
       <div className="hidden gap-6 lg:flex 2xl:gap-8">
-        <SelectChain />
+        {isConnected && <SelectChain />}
         <WalletConnect />
       </div>
 

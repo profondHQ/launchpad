@@ -139,7 +139,7 @@ export default function FormCollection({metadataColl, setMetadataColl}: {metadat
       </div>
 
       {/* Blockchain */}
-      <div className="mb-8">
+      {/* <div className="mb-8">
         <InputLabel title="Blockchain" />
         <div className="relative">
           <Listbox value={blockchain} onChange={setBlockChain}>
@@ -176,7 +176,7 @@ export default function FormCollection({metadataColl, setMetadataColl}: {metadat
             </Transition>
           </Listbox>
         </div>
-      </div>
+      </div> */}
     </>
   );
 }

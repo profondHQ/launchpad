@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Listbox } from '@/components/ui/listbox';
 import { ChevronDown } from '@/components/icons/chevron-down';
 import { CheckmarkIcon } from '@/components/icons/checkmark';
 import { Transition } from '@/components/ui/transition';
+import { useInkathon, allSubstrateChains, SubstrateChain } from '@scio-labs/use-inkathon';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 
 export default function SelectChain() {
   const chainOptions = [
@@ -44,12 +46,30 @@ export default function SelectChain() {
     },
   ];
 
-  const [selected, setSelected] = useState(chainOptions[0]);
+  const [selectedChain, setSelectedChain] = useState<SubstrateChain>(allSubstrateChains[0]);
+  const [chain, setChain] = useLocalStorage('chain');
+  const { switchActiveChain, isConnected} = useInkathon()
+
+  const anyOnLocal = async()=>{
+    if(chain){
+      isConnected && await switchActiveChain?.(JSON.parse(chain))
+      setSelectedChain(JSON.parse(chain))
+    } 
+}    
+
+  useEffect(()=>{
+      anyOnLocal()
+  },[chain])
+
   return (
     <div className="relative w-60">
-      <Listbox value={selected} onChange={setSelected}>
+      <Listbox value={selectedChain} onChange={async(value)=>{
+        setSelectedChain(value)
+        isConnected && await switchActiveChain?.(value)
+        setChain(JSON.stringify(value))
+      }}>
         <Listbox.Button className="text-case-inherit letter-space-inherit flex h-10 w-full items-center justify-between rounded-lg border border-gray-200 bg-white px-4 text-sm font-medium text-gray-900 outline-none transition-shadow duration-200 hover:border-gray-900 hover:ring-1 hover:ring-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:hover:border-gray-600 dark:hover:ring-gray-600 sm:h-12 sm:px-5">
-          <div className="flex items-center">{selected.name}</div>
+          <div className="flex items-center">{selectedChain.name}</div>
           <ChevronDown />
         </Listbox.Button>
         <Transition
@@ -61,54 +81,50 @@ export default function SelectChain() {
             <Listbox.Label className="my-2 text-xs uppercase text-gray-500 dark:text-gray-500">
               Live Network
             </Listbox.Label>
-            {chainOptions.map((option) => {
-              if (option.type == 'live') {
-                return (
-                  <Listbox.Option key={option.id} value={option}>
-                    {({ selected }) => (
-                      <div
-                        className={`flex cursor-pointer items-center rounded-md px-3 py-2 text-sm text-gray-900 transition dark:text-gray-100  ${
-                          selected
-                            ? 'bg-gray-100 dark:bg-gray-700/70'
-                            : 'hover:bg-gray-100 dark:hover:bg-gray-700/70'
-                        }`}
-                      >
-                        {option.name}
-                        {selected ? (
-                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
-                            <CheckmarkIcon
-                              className="h-5 w-5"
-                              aria-hidden="true"
-                            />
-                          </span>
-                        ) : null}
-                      </div>
-                    )}
-                  </Listbox.Option>
-                );
-              }
+            {allSubstrateChains.filter(chain => !chain.testnet).map((option) => {
+              return (
+                <Listbox.Option key={option.ss58Prefix} value={option}>
+                    <div
+                      className={`flex cursor-pointer items-center justify-between rounded-md px-3 py-2 text-sm text-gray-900 transition dark:text-gray-100  ${
+                        selectedChain.name === option.name
+                          ? 'bg-gray-100 dark:bg-gray-700/70'
+                          : 'hover:bg-gray-100 dark:hover:bg-gray-700/70'
+                      }`}
+                    >
+                      {option.name}
+                      {selectedChain.name === option.name ? (
+                          <CheckmarkIcon
+                            className="h-5 w-5"
+                            aria-hidden="true"
+                          />
+                      ) : null}
+                    </div>
+                </Listbox.Option>
+              );
             })}
             <Listbox.Label className="my-2 text-xs uppercase text-gray-500 dark:text-gray-500">
               Test Network
             </Listbox.Label>
-            {chainOptions.map((option) => {
-              if (option.type == 'test') {
+            {allSubstrateChains.filter(chain => chain.testnet).map((option) => {
                 return (
-                  <Listbox.Option key={option.id} value={option}>
-                    {({ selected }) => (
+                  <Listbox.Option key={option.ss58Prefix} value={option}>
                       <div
-                        className={`flex cursor-pointer items-center rounded-md px-3 py-2 text-sm text-gray-900 transition dark:text-gray-100  ${
-                          selected
+                        className={`flex cursor-pointer items-center justify-between rounded-md px-3 py-2 text-sm text-gray-900 transition dark:text-gray-100  ${
+                          selectedChain.name === option.name
                             ? 'bg-gray-200/70 font-medium dark:bg-gray-600/60'
                             : 'hover:bg-gray-100 dark:hover:bg-gray-700/70'
                         }`}
                       >
                         {option.name}
+                        {selectedChain.name === option.name ? (
+                          <CheckmarkIcon
+                            className="h-5 w-5"
+                            aria-hidden="true"
+                          />
+                      ) : null}
                       </div>
-                    )}
                   </Listbox.Option>
                 );
-              }
             })}
           </Listbox.Options>
         </Transition>

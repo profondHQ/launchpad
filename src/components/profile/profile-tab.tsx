@@ -58,8 +58,6 @@ export default function ProfileTab() {
     }
   },[activeAccount])
 
-  console.log(myCoins)
-
   return (
     <Suspense fallback={<Loader variant="blink" />}>
       <ParamTab tabMenu={tabMenu}>
