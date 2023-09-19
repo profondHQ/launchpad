@@ -1,8 +1,9 @@
 import { collectionConfig } from "@/config/collection"
 import { ApiPromise } from "@polkadot/api"
 import { Web3Storage } from "web3.storage"
-import { BN, stringCamelCase, bnToBn } from '@polkadot/util'
+import { BN, stringCamelCase, bnToBn, u8aToHex } from '@polkadot/util'
 import type { WeightV2 } from '@polkadot/types/interfaces'
+import { decodeAddress, encodeAddress } from '@polkadot/util-crypto'
 
 export const prettyTruncate = (str = '', len = 8, type: string) => {
 	if (str && str.length > len) {
@@ -75,4 +76,18 @@ export const getMaxGasLimit = (api: ApiPromise, reductionFactor = 0.8) => {
 		: new BN(0)
 
 	return getGasLimit(api, maxRefTime, maxProofSize)
+}
+
+export const getSs58Address = (format: number, address?: string) => {
+	if (!address) return ''
+
+	try {
+		const ss58Address = encodeAddress(
+			u8aToHex(decodeAddress(address)),
+			format
+		)
+		return ss58Address
+	} catch (error) {
+		return address
+	}
 }

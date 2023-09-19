@@ -13,6 +13,7 @@ import axios from 'axios';
 import { API_URL } from '@/config/common';
 import { WalletContext } from '@/contexts';
 import { useInkathon } from '@scio-labs/use-inkathon';
+import { getSs58Address } from '@/utils/common';
 
 const tabMenu = [
   {
@@ -27,26 +28,26 @@ const tabMenu = [
 
 export default function ProfileTab() {
   // const {selectedAccount} = useContext(WalletContext)
-  const {activeAccount} = useInkathon()
+  const {activeAccount, activeChain} = useInkathon()
   const [myColls, setMyColls] = useState<any|null>(null)
   const [myCoins, setMyCoins] = useState<any|null>(null)
 
   const getMyColls = async()=>{
     const res = await axios.get(API_URL + '/collections', 
-    // {params: {
-    //   owner_address: selectedAccount?.address
-    // }}
+    {params: {
+      owner_address: getSs58Address(activeChain?.ss58Prefix || 0, activeAccount?.address)
+    }}
     )
     setMyColls(res.data)
   }
 
   const getMyCoins = async()=>{
     const res = await axios.get(API_URL + '/coins', 
-    // {params: 
-    //   {
-    //   minter_address: selectedAccount?.address
-    //   }
-    // }
+    {params: 
+      {
+      minter_address: getSs58Address(activeChain?.ss58Prefix || 0, activeAccount?.address)
+      }
+    }
   )
     setMyCoins(res.data)
   }
