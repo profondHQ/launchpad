@@ -48,14 +48,25 @@ export default function UploadAsset({metadataColl, setMetadataColl}: {metadataCo
     for (const file of files) {
       const id = file.name.split('.')[0] - 1;
       if (file.type.includes('image')) {
-        data[id] = {
-          id,
-          preview: URL.createObjectURL(file),
-        };
+        if (!data[id]) {
+          data[id] = {
+            id: id,
+            preview: URL.createObjectURL(file),
+          };
+        } else {
+          data[id].id = id;
+          data[id].preview = URL.createObjectURL(file);
+        }
       }
       if (file.type.includes('json')) {
         const metadata = await parse(file);
-        data[id].metadata = metadata;
+        if (!data[id]) {
+          data[id] = {
+            metadata: metadata,
+          };
+        } else {
+          data[id].metadata = metadata;
+        }
       }
     }
     setUploadedData(data);
