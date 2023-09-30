@@ -6,12 +6,21 @@ import Button from '@/components/ui/button';
 import NFTGridUpload from '@/components/collection/nft-card-upload';
 import { uploadFiles } from '@/utils/common';
 import axios from 'axios';
+import AnchorLink from '@/components/ui/links/anchor-link';
+import CheckSuccess from '@/assets/images/check-success.svg';
+import Image from '@/components/ui/image';
 
-export default function UploadAsset({metadataColl, setMetadataColl}: {metadataColl: any, setMetadataColl: any}) {
+export default function UploadAsset({
+  metadataColl,
+  setMetadataColl,
+}: {
+  metadataColl: any;
+  setMetadataColl: any;
+}) {
   const [files, setFiles] = useState([]);
   const [uploadedData, setUploadedData] = useState<any>([]);
-  const [uploaded, setUploaded] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [uploaded, setUploaded] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { getRootProps, getInputProps } = useDropzone({
     multiple: true,
     onDrop: (acceptedFiles: any) => {
@@ -76,49 +85,59 @@ export default function UploadAsset({metadataColl, setMetadataColl}: {metadataCo
     handleMetadata(files);
   }, [files]);
 
-  const onUpload = async()=>{
-    try{
-      setLoading(true)
-      let newUploadedData: any[] = []
-      const imagefiles: any = files.filter((file:any) => file.type.includes('image'))
-      const res = await Promise.all(imagefiles.map((file:any) => uploadFiles([file])))
-      uploadedData?.forEach((uploaded:any, idx: number) => {
-        uploaded.metadata.image = `ipfs://${res[idx]}/${imagefiles[idx].name}`
-        newUploadedData.push(uploaded)
-      })
-      const newUploadedMetadata = newUploadedData.map((newUploaded:any) => newUploaded.metadata)
-      
-      await axios.post('/api', {metadatas: newUploadedMetadata})
+  const onUpload = async () => {
+    try {
+      setLoading(true);
+      let newUploadedData: any[] = [];
+      const imagefiles: any = files.filter((file: any) =>
+        file.type.includes('image')
+      );
+      const res = await Promise.all(
+        imagefiles.map((file: any) => uploadFiles([file]))
+      );
+      uploadedData?.forEach((uploaded: any, idx: number) => {
+        uploaded.metadata.image = `ipfs://${res[idx]}/${imagefiles[idx].name}`;
+        newUploadedData.push(uploaded);
+      });
+      const newUploadedMetadata = newUploadedData.map(
+        (newUploaded: any) => newUploaded.metadata
+      );
 
-      const metadataFiles  = newUploadedMetadata.map((data, idx) => {
+      await axios.post('/api', { metadatas: newUploadedMetadata });
+
+      const metadataFiles = newUploadedMetadata.map((data, idx) => {
         const str = JSON.stringify(data);
-        const file = new File([str], `${idx}.json`, {type: "application/json"})
-        return file
-      })
-      const metadataRootCid = await uploadFiles(metadataFiles)
+        const file = new File([str], `${idx}.json`, {
+          type: 'application/json',
+        });
+        return file;
+      });
+      const metadataRootCid = await uploadFiles(metadataFiles);
       setMetadataColl({
         ...metadataColl,
-        base_uri: `ipfs://${metadataRootCid}`
-      })
-      await axios.put('/api')
-      setLoading(false)
-      setUploaded(true)
-    }catch(error){
-      setLoading(false)
+        base_uri: `ipfs://${metadataRootCid}`,
+      });
+      await axios.put('/api');
+      setLoading(false);
+      setUploaded(true);
+    } catch (error) {
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <>
-      <div className="mb-8">
-        <div className="flex items-center justify-center">
-          <h4 className="text-sm font-medium uppercase tracking-wider text-gray-900 dark:text-white sm:text-xl">
-            {uploadedData.length == 0
-              ? 'Drop your NFT assets below to launch!'
-              : 'Preview Uploaded'}
-          </h4>
+      {!uploaded && (
+        <div className="mb-8">
+          <div className="flex items-center justify-center">
+            <h4 className="text-sm font-medium uppercase tracking-wider text-gray-900 dark:text-white sm:text-xl">
+              {uploadedData.length == 0
+                ? 'Drop your NFT assets below to launch!'
+                : 'Preview Uploaded'}
+            </h4>
+          </div>
         </div>
-      </div>
+      )}
       {uploadedData.length == 0 ? (
         <div className="mb-8">
           <div className="rounded-lg border border-solid border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-light-dark sm:p-6">
@@ -141,7 +160,19 @@ export default function UploadAsset({metadataColl, setMetadataColl}: {metadataCo
         </div>
       ) : null}
 
-      {uploadedData.length > 0 ? (
+      {!uploaded && (
+        <div className="mb-8 flex items-center justify-center">
+          <AnchorLink
+            href="https://gist.github.com/adeyusupp/bc853ff87dcf254510adda73c85ed62f#file-sample_nft_input-zip"
+            className="inline-block text-sm font-medium tracking-[0.5px] text-[#4B5563] underline dark:text-gray-300"
+            target="_blank"
+          >
+            Download Sample File
+          </AnchorLink>
+        </div>
+      )}
+
+      {uploadedData.length > 0 && !uploaded ? (
         <>
           <div className="mb-8">
             <div className="flex items-center justify-center">
@@ -157,13 +188,39 @@ export default function UploadAsset({metadataColl, setMetadataColl}: {metadataCo
               ))}
             </div>
           </div>
-          <div className='flex items-center justify-center w-full'>
-          <Button shape="rounded" variant="solid" color="primary" className="mr-2" isLoading={loading} onClick={onUpload}>
-            {uploaded ? 'Uploaded' : 'Upload'}
-          </Button>
-          </div>
+          {!uploaded && (
+            <div className="flex w-full items-center justify-center">
+              <Button
+                shape="rounded"
+                variant="solid"
+                color="primary"
+                className="mr-2"
+                isLoading={loading}
+                onClick={onUpload}
+              >
+                Upload
+              </Button>
+            </div>
+          )}
         </>
       ) : null}
+      {uploadedData.length > 0 && uploaded && (
+        <div className="mb-8">
+          <div className="w-full rounded-lg border border-solid border-gray-200 bg-white p-4 transition-all dark:border-gray-700 dark:bg-light-dark sm:p-6">
+            <div className="flex flex-col items-center justify-center">
+              <Image
+                src={CheckSuccess}
+                alt="success"
+                width={100}
+                height={100}
+              />
+              <h4 className="mt-5 text-sm font-medium uppercase tracking-wider text-gray-900 dark:text-white sm:text-xl">
+                Success Upload Collection
+              </h4>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
