@@ -46,24 +46,6 @@ export default function NFTGridUpload({ data }: NFTGridUploadProps) {
             {data?.metadata.description}
           </div>
         </div>
-        <div className="mt-5 grid grid-cols-2 gap-3">
-          <Button
-            shape="rounded"
-            variant="solid"
-            color="gray"
-            className="dark:bg-gray-800"
-          >
-            edit
-          </Button>
-          <Button
-            shape="rounded"
-            variant="solid"
-            color="danger"
-            className="dark:bg-danger-800"
-          >
-            delete
-          </Button>
-        </div>
       </div>
       <ModalDetail
         show={isOpen}
