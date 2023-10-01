@@ -96,6 +96,16 @@ export default function LauchNFT() {
     }
   },[selectedAccount])
 
+  const isDisabled = ()=>{
+    if(step === 1)
+      if(metadataColl.name === '' || metadataColl.symbol === '' || metadataColl.public_sale_start_at === 0 || metadataColl.public_sale_end_at === 0 || metadataColl.price_per_mint === 0 || metadataColl.max_supply === 0) return true
+    if(step === 2)
+      if(metadataColl.base_uri === '') return true  
+    return false
+  }
+
+  console.log(metadataColl, step)
+
   return (
     <>
       <div className="mx-auto w-full sm:pt-0 lg:px-8 xl:px-10 2xl:px-0">
@@ -146,9 +156,12 @@ export default function LauchNFT() {
             BACK
           </Button>
         )}
-        <Button shape="rounded" onClick={handleNext}>
-          NEXT
-        </Button>
+        {
+          step < 3 &&
+          <Button shape="rounded" onClick={handleNext} disabled={isDisabled()}>
+            NEXT
+          </Button>
+        }
       </div>
     </>
   );

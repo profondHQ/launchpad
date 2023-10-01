@@ -42,6 +42,7 @@ import { collectionConfig } from '@/config/collection';
 import { getMaxGasLimit } from '@/utils/common';
 import { useInkathon } from '@scio-labs/use-inkathon';
 import CheckSuccess from '@/assets/images/check-success.svg';
+import Loader from '../ui/loader';
 
 export default function DeployNFT({
   metadataColl,
@@ -133,7 +134,7 @@ export default function DeployNFT({
           >
             <div className="flex items-center justify-center">
               <p className="text-sm font-medium tracking-wider text-gray-900 dark:text-white sm:text-sm">
-                {loading ? 'Deploying...' : 'Deploy NFT'}
+                {loading ? <Loader size="large" variant="scaleUp"/> : 'Deploy NFT'}
               </p>
             </div>
           </button>

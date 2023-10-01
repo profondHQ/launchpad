@@ -71,14 +71,14 @@ function SelectWallet({ onSelectWallet }: Props): React.ReactElement<Props> {
 
     return <div className={'select-wallet-wrapper'}>
         <div className={'select-wallet-content'}>
-            <div className='dotsama-wallet-list mb-4'>
+            {/* <div className='dotsama-wallet-list mb-4'>
                 <div className='wallet-cat-title'>
                     Substrate Chains
                 </div>
                 <div className='overflow-y-auto max-h-52'>
                     {allSubstrateChains.map((chain) => (chainItem(chain)))}
                 </div>
-            </div>
+            </div> */}
             <div className='dotsama-wallet-list mb-4'>
                 <div className='wallet-cat-title'>
                     Substrate Wallets
@@ -87,13 +87,7 @@ function SelectWallet({ onSelectWallet }: Props): React.ReactElement<Props> {
                     {allSubstrateWallets.map((wallet) => (walletItem(wallet)))}
                 </div>
             </div>
-            <Button disabled={!selectedChain || !selectedWallet} variant="solid" color="primary" className='w-full' onClick={()=> onSelectWallet(selectedChain, selectedWallet)}>Select</Button>
-            {/* <div className='evm-wallet-list'>
-                <div className='wallet-cat-title'>
-                    EVM Wallets
-                </div>
-                {evmWallets.map((wallet) => (walletItem(wallet, onClickEvmWallet)))}
-            </div> */}
+            <Button disabled={!selectedWallet} variant="solid" color="primary" className='w-full' onClick={()=> onSelectWallet(selectedChain, selectedWallet)}>Select</Button>
         </div>
     </div>;
 }
