@@ -41,11 +41,8 @@ import metadata_psp34 from '@/config/metadata/psp34';
 import { collectionConfig } from '@/config/collection';
 import { getMaxGasLimit } from '@/utils/common';
 import { useInkathon } from '@scio-labs/use-inkathon';
-<<<<<<< Updated upstream
 import CheckSuccess from '@/assets/images/check-success.svg';
-=======
 import Loader from '../ui/loader';
->>>>>>> Stashed changes
 
 export default function DeployNFT({
   metadataColl,
@@ -129,7 +126,6 @@ export default function DeployNFT({
           </h4>
         </div>
       </div>
-<<<<<<< Updated upstream
       {!deployed && (
         <div className="mb-8">
           <button
@@ -138,7 +134,7 @@ export default function DeployNFT({
           >
             <div className="flex items-center justify-center">
               <p className="text-sm font-medium tracking-wider text-gray-900 dark:text-white sm:text-sm">
-                {loading ? 'Deploying...' : 'Deploy NFT'}
+                {loading ? <Loader size="large" variant="scaleUp"/> : 'Deploy NFT'}
               </p>
             </div>
           </button>
@@ -158,16 +154,6 @@ export default function DeployNFT({
                 Success Deploy NFT
               </h4>
             </div>
-=======
-      <div className="mb-8">
-        <button onClick={onDeployCollection} className="rounded-lg w-full h-44 border border-solid border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-light-dark sm:p-6 cursor-pointer transition-all">
-          <div className="flex items-center justify-center">
-            <p className="text-sm font-medium tracking-wider text-gray-900 dark:text-white sm:text-sm">
-              {loading ? <Loader size="large" variant="scaleUp"/> : deployed ? 'Deployed' : 'Deploy NFT'}
-
-              {deployed && <CheckmarkIcon />}
-            </p>
->>>>>>> Stashed changes
           </div>
         </div>
       )}
