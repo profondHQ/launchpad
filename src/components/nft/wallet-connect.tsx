@@ -143,7 +143,7 @@ export default function WalletConnect({
                         onClick={() => walletContext.open()}
                       >
                         <span className="grow uppercase">
-                          Change Chain and wallet
+                          Change wallet
                         </span>
                         <ChevronForward />
                       </div>
@@ -170,13 +170,13 @@ export default function WalletConnect({
             </Menu>
           </div>
 
-          <ActiveLink href="/create-nft" className={cn(anchorClassName)}>
+          {/* <ActiveLink href="/create-nft" className={cn(anchorClassName)}>
             <Button
               className={cn('shadow-main hover:shadow-large', btnClassName)}
             >
               CREATE
             </Button>
-          </ActiveLink>
+          </ActiveLink> */}
         </div >
       ) : (
         <Button

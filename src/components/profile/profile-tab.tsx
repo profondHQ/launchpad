@@ -28,7 +28,7 @@ const tabMenu = [
 
 export default function ProfileTab() {
   // const {selectedAccount} = useContext(WalletContext)
-  const {activeAccount, activeChain} = useInkathon()
+  const {activeAccount, activeChain, isConnecting} = useInkathon()
   const [myColls, setMyColls] = useState<any|null>(null)
   const [myCoins, setMyCoins] = useState<any|null>(null)
 
@@ -63,27 +63,43 @@ export default function ProfileTab() {
     <Suspense fallback={<Loader variant="blink" />}>
       <ParamTab tabMenu={tabMenu}>
         <TabPanel className="focus:outline-none">
+          {
+            isConnecting ? 
+            <div className='flex items-center w-full justify-center h-52'>
+                <Loader size="large" variant="scaleUp"/>
+            </div> : myColls?.length === 0 ? 
+            <div className='flex items-center w-full justify-center h-52'>No data is displayed</div>
+            :
           <div className="grid gap-4 xs:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 lg:gap-5 xl:gap-6 3xl:grid-cols-3 4xl:grid-cols-4">
             {myColls?.map((collection:any, idx:number) => (
               <CollectionCard
-                item={collection}
-                key={`collection-key-${collection.contract_address}`}
+              item={collection}
+              key={`collection-key-${collection.contract_address}`}
               />
-            ))}
+              ))}
           </div>
+          }
         </TabPanel>
         <TabPanel className="focus:outline-none">
           <div className="space-y-8 md:space-y-10 xl:space-y-12">
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1">
-              {myCoins?.map((coin:any) => (
-                <CoinList
+            {
+              isConnecting ? 
+              <div className='flex items-center w-full justify-center h-52'>
+                  <Loader size="large" variant="scaleUp"/>
+              </div> : myCoins?.length === 0 ? 
+              <div className='flex items-center w-full justify-center h-52'>No data is displayed</div>
+              :
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1">
+                {myCoins?.map((coin:any) => (
+                  <CoinList
                   key={`coin-${coin?.contract_address}`}
                   name={coin.name}
                   symbol={coin.symbol}
                   supply={coin.total_supply}
-                />
-              ))}
-            </div>
+                  />
+                  ))}
+              </div>
+              }
           </div>
         </TabPanel>
       </ParamTab>
