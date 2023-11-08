@@ -39,4 +39,9 @@ export const defaultMenuItems = [
     icon: <CompassIcon />,
     href: routes.profile,
   },
+  {
+    name: 'Sale Token',
+    icon: <CompassIcon />,
+    href: routes.saleToken,
+  },
 ];
