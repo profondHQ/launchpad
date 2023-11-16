@@ -34,6 +34,7 @@ export default function LaunchCoin() {
     is_pausable: false,
     is_mintable: false,
     is_burnable: false,
+    is_sale: true,
   });
 
   const onInput = (e: ChangeEvent<HTMLInputElement>, type: string) => {
@@ -82,6 +83,7 @@ export default function LaunchCoin() {
           metadataCoin.is_pausable,
           metadataCoin.is_mintable,
           metadataCoin.is_burnable,
+          metadataCoin.is_sale
         ])
       );
       await tx.signAndSend(
