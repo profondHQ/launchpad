@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_URL } from '@/config/common';
 import ModalDetail from './modal-detail';
+import { BN } from '@polkadot/util';
 
 export default function MinimalScreen() {
   const [myCoins, setMyCoins] = useState<any | null>(null);
@@ -14,9 +15,10 @@ export default function MinimalScreen() {
   }, []);
 
   const getMyCoins = async () => {
-    const res = await axios.get(API_URL + '/coins', {});
+    const res = await axios.get(API_URL + '/coins?is_on_sale=true', {});
     setMyCoins(res.data);
   };
+
   return (
     <div className="mx-auto w-full sm:pt-0 lg:px-8 xl:px-10 2xl:px-0">
       <div className="mb-6 grid grid-cols-1 gap-12 sm:mb-10">
@@ -33,7 +35,9 @@ export default function MinimalScreen() {
                 key={`coin-${coin?.contract_address}`}
                 name={coin.name}
                 symbol={coin.symbol}
-                supply={coin.total_supply}
+                maxSupply={coin.max_supply.$numberDecimal}
+                boughtSupply={coin.bought_supply.$numberDecimal}
+                decimals={coin.decimals}
                 onClick={() => {
                   setModalOpen(true);
                   setSelectedCoin(coin);
@@ -54,15 +58,21 @@ export default function MinimalScreen() {
 
 export function CoinList({
   name,
-  supply,
+  maxSupply,
+  boughtSupply,
   symbol,
+  decimals,
   onClick,
 }: {
   name?: string;
-  supply?: string;
+  maxSupply?: string;
+  boughtSupply?: string;
   symbol?: string;
+  decimals?: number;
   onClick: any;
 }) {
+  const formattedMaxSupply = (new BN(maxSupply as string)).div(new BN(10).pow(new BN(decimals as number))).toString()
+  const formattedBoughtSupply = (new BN(boughtSupply as string)).div(new BN(10).pow(new BN(decimals as number))).toString()
   return (
     <div
       onClick={() => onClick()}
@@ -73,7 +83,7 @@ export function CoinList({
         <p className="text-sm text-gray-600 ltr:ml-2 rtl:mr-2">{symbol}</p>
       </div>
       <div className="overflow-hidden text-ellipsis -tracking-wider ltr:pl-2 rtl:pr-2">
-        Total supply: {supply}
+        Supply: {formattedBoughtSupply}/{formattedMaxSupply}
       </div>
     </div>
   );
