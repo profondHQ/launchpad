@@ -86,8 +86,10 @@ export default function SaleToken() {
     setLoading(true);
     const startAtTimestamp = new Date(startAt).getTime();
     const endAtTimestamp = new Date(endAt).getTime();
-    const maxSupplyFinal = (maxSupply * 10 ** decimals).toString();
-    const salePriceFinal = (salePrice * 10 ** decimals).toString();
+    const maxSupplyFinal = (new BN(maxSupply)).mul(new BN(10).pow(new BN(decimals))).toString();
+    // All native chain use 18 decimals
+    // * 10000 to support fraction
+    const salePriceFinal = (new BN(salePrice * 10000)).mul(new BN(10).pow(new BN(14))).toString();
     const contract = new ContractPromise(
       api as ApiPromise,
       metadata_psp22,
