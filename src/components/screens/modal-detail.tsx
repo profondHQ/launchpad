@@ -8,9 +8,12 @@ import { Close } from '@/components/icons/close';
 import useCountdown from '@/hooks/useCountdown';
 import Input from '@/components/ui/forms/input';
 import { Check } from '../icons/check';
-import { useInkathon } from '@scio-labs/use-inkathon';
+import { contractTx, useInkathon } from '@scio-labs/use-inkathon';
 import { OpenSelectWallet } from '@/contexts/index';
 import { BN } from '@polkadot/util';
+import { ContractPromise } from '@polkadot/api-contract';
+import { ApiPromise } from '@polkadot/api';
+import metadata_psp22 from '@/config/metadata/psp22';
 
 type ModalsProps = {
   show: boolean;
@@ -50,12 +53,58 @@ export default function ModalDetail({ show, handleClose, data }: ModalsProps) {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [payload, setPayload] = useState(initialPayload);
+  const { api, activeAccount, activeChain } = useInkathon();
 
   const closeModal = () => {
     handleClose();
     setPayload(initialPayload);
     setSubmitted(false);
     setLoading(false);
+  };
+
+  const buyToken = async (
+    contractAddress: string,
+    decimals: number,
+    saleRate: number,
+    amount: number
+  ) => {
+    setLoading(true);
+    const amountFinal = new BN(amount)
+      .mul(new BN(10).pow(new BN(decimals)))
+      .div(new BN(saleRate))
+      .toString();
+    console.log(amountFinal)
+    // All native chain use 18 decimals
+    // * 10000 to support fraction
+    const contract = new ContractPromise(
+      api as ApiPromise,
+      metadata_psp22,
+      contractAddress
+    );
+
+    try {
+      await contractTx(
+        api as ApiPromise,
+        activeAccount?.address as string,
+        contract,
+        'buy',
+        { value: amountFinal },
+        [],
+        async (result: any) => {
+          if (result.status.isInBlock || result.status.isFinalized) {
+            console.log(result);
+            setLoading(false);
+            setSubmitted(true);
+            setTimeout(() => {
+              setSubmitted(false);
+            }, 6000);
+          }
+        }
+      );
+    } catch (error) {
+      setLoading(false);
+      console.error(error);
+    }
   };
 
   const onInput = (e: ChangeEvent<HTMLInputElement>, type: string) => {
@@ -66,8 +115,12 @@ export default function ModalDetail({ show, handleClose, data }: ModalsProps) {
   };
 
   const onSubmit = async () => {
-    console.log('payload ', payload);
-    setSubmitted(true);
+    await buyToken(
+      data?.contract_address,
+      data?.decimals,
+      data?.sale_rate.$numberDecimal,
+      payload.amount
+    );
   };
 
   const formattedMaxSupply = new BN(data?.max_supply.$numberDecimal as string)
@@ -219,10 +272,7 @@ export default function ModalDetail({ show, handleClose, data }: ModalsProps) {
                       </div>
                       <div className="mt-4">
                         Price:{' '}
-                        {new BN(payload.amount)
-                          .mul(new BN(data?.sale_price.$numberDecimal))
-                          .div(new BN(10).pow(new BN(14)))
-                          .toNumber() / 10000}{' '}
+                        {payload.amount / data?.sale_rate.$numberDecimal}{' '}
                         {chainCoinSymbols[data?.chain]}
                       </div>
                       {isConnected ? (

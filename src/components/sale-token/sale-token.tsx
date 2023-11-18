@@ -65,9 +65,9 @@ export default function SaleToken() {
       api as ApiPromise,
       contractAddress,
       contract,
-      'get_sale_price'
+      'get_max_supply'
     );
-    const { output } = decodeOutput(result, contract, 'get_sale_price');
+    const { output } = decodeOutput(result, contract, 'get_max_supply');
     if (output?.Ok) {
       setIsCoinInitiated(true);
     } else {
@@ -89,14 +89,15 @@ export default function SaleToken() {
     const maxSupplyFinal = (new BN(maxSupply)).mul(new BN(10).pow(new BN(decimals))).toString();
     // All native chain use 18 decimals
     // * 10000 to support fraction
-    const salePriceFinal = (new BN(salePrice * 10000)).mul(new BN(10).pow(new BN(14))).toString();
+    // amount = native_amount * sale_rate
+    // sale_price = native_amount / amount
+    // sale_rate = amount / native_amount
+    const saleRate = 1 / salePrice;
     const contract = new ContractPromise(
       api as ApiPromise,
       metadata_psp22,
       contractAddress
     );
-
-    console.log(maxSupplyFinal, salePriceFinal);
 
     try {
       await contractTx(
@@ -105,7 +106,7 @@ export default function SaleToken() {
         contract,
         'set_sale_options',
         {},
-        [salePriceFinal, maxSupplyFinal, startAtTimestamp, endAtTimestamp],
+        [saleRate, maxSupplyFinal, startAtTimestamp, endAtTimestamp],
         async (result: any) => {
           if (result.status.isInBlock || result.status.isFinalized) {
             console.log(result);

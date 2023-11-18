@@ -1,3 +1,3 @@
 export const coinConfig = {
-  code_hash: '0xad2d9d62321056956d6064f2da683b0cfdd250633f7a9064d09a8d1dbda23734'
+  code_hash: '0x0aedeeccb1ce02c852cc0aa2b78d26837d464fa93857123fd726ca52a9a6b364'
 }
