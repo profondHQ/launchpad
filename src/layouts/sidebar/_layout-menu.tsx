@@ -73,7 +73,7 @@ export function MenuItems() {
                 </Transition>
               </Menu>
             </div>
-          ) : item.name === 'Profile' || item.name === 'Sale Token' ? (
+          ) : item.name === 'Profile' || item.name === 'Launch Token' ? (
             isConnected ? (
               <ActiveLink
                 href={item.href}
