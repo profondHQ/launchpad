@@ -45,7 +45,7 @@ export const defaultMenuItems = [
     href: routes.profile,
   },
   {
-    name: 'Sale Token',
+    name: 'Launch Token',
     icon: <CompassIcon />,
     href: routes.saleToken,
   },
