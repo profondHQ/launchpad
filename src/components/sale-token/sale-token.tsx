@@ -174,7 +174,7 @@ export default function SaleToken() {
       <div className="mb-6 grid grid-cols-1 gap-12 sm:mb-10">
         <div className="flex items-center justify-center">
           <h2 className="text-lg font-medium uppercase tracking-wider text-gray-900 dark:text-white  sm:text-2xl">
-            Sale Token
+            Launch Token
           </h2>
         </div>
       </div>
@@ -184,7 +184,7 @@ export default function SaleToken() {
             <div className="flex flex-row items-center">
               <Image src={CheckSuccess} alt="success" width={20} height={20} />
               <h4 className="ms-5 text-sm font-medium uppercase tracking-wider dark:text-green-500">
-                Success Setting Sale Token
+                Success Setting Launch Token
               </h4>
             </div>
           </Alert>
