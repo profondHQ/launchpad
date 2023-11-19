@@ -22,7 +22,7 @@ export default function AnalyticDashboard() {
           </h2>
           <iframe
             key={key}
-            src={`http://3.99.250.94:30000/public/dashboard/e427d22a-c542-4120-ae7e-cc7e578075e2#theme=${theme}&bordered=false&titled=false`}
+            src={`https://metabase.profond.ai/public/dashboard/e427d22a-c542-4120-ae7e-cc7e578075e2#theme=${theme}&bordered=false&titled=false`}
             height="750"
           ></iframe>
         </div>
