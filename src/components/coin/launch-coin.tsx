@@ -27,13 +27,14 @@ export default function LaunchCoin() {
   const [submitted, setSubmitted] = useState(false);
   const { activeSigner, activeAccount } = useInkathon();
   const [metadataCoin, setMetadataCoin] = useState({
-    total_supply: 0,
+    initial_supply: 0,
     name: '',
     symbol: '',
     decimals: 0,
     is_pausable: false,
     is_mintable: false,
     is_burnable: false,
+    is_sale: true,
   });
 
   const onInput = (e: ChangeEvent<HTMLInputElement>, type: string) => {
@@ -53,7 +54,7 @@ export default function LaunchCoin() {
   const onSubmit = async () => {
     setLoading(true);
     try {
-      const totalSupply = new BN(metadataCoin.total_supply).mul(
+      const initialSupply = new BN(metadataCoin.initial_supply).mul(
         new BN((10 ** metadataCoin.decimals).toString())
       );
       const wsProvider = new WsProvider(RPC);
@@ -75,13 +76,14 @@ export default function LaunchCoin() {
           value: 0,
         },
         ...(metadataCoin && [
-          totalSupply,
+          initialSupply,
           metadataCoin.name,
           metadataCoin.symbol,
           metadataCoin.decimals,
           metadataCoin.is_pausable,
           metadataCoin.is_mintable,
           metadataCoin.is_burnable,
+          metadataCoin.is_sale
         ])
       );
       await tx.signAndSend(
@@ -133,13 +135,13 @@ export default function LaunchCoin() {
         />
       </div>
       <div className="mb-8">
-        <InputLabel title="Total Supply" important />
+        <InputLabel title="Initial Supply (mint to owner)" important />
         <Input
           min={0}
           type="number"
-          placeholder="Enter your total supply"
+          placeholder="Enter your initial supply"
           inputClassName="spin-button-hidden"
-          onChange={(e) => onInput(e, 'total_supply')}
+          onChange={(e) => onInput(e, 'initial_supply')}
         />
       </div>
       <div className="mb-8">
@@ -151,13 +153,13 @@ export default function LaunchCoin() {
         />
       </div>
       <div className="mb-8">
-        <InputLabel title="Decimal" important />
+        <InputLabel title="Decimals" important />
         <Input
           min={0}
           type="number"
-          placeholder="Enter decimal"
+          placeholder="Enter decimals"
           inputClassName="spin-button-hidden"
-          onChange={(e) => onInput(e, 'decimal')}
+          onChange={(e) => onInput(e, 'decimals')}
         />
       </div>
       <div className="mb-8 grid grid-cols-4 gap-5">

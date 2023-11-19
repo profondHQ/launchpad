@@ -8,13 +8,25 @@ import { Close } from '@/components/icons/close';
 import useCountdown from '@/hooks/useCountdown';
 import Input from '@/components/ui/forms/input';
 import { Check } from '../icons/check';
-import { useInkathon } from '@scio-labs/use-inkathon';
+import { contractTx, useInkathon } from '@scio-labs/use-inkathon';
 import { OpenSelectWallet } from '@/contexts/index';
+import { BN } from '@polkadot/util';
+import { ContractPromise } from '@polkadot/api-contract';
+import { ApiPromise } from '@polkadot/api';
+import metadata_psp22 from '@/config/metadata/psp22';
 
 type ModalsProps = {
   show: boolean;
   handleClose: () => void;
   data: any;
+};
+
+const chainCoinSymbols: any = {
+  shibuya: 'SBY',
+  astar: 'ASTR',
+  shiden: 'SDN',
+  alephzerotestnet: 'TZERO',
+  alephzero: 'AZERO',
 };
 
 export default function ModalDetail({ show, handleClose, data }: ModalsProps) {
@@ -25,19 +37,74 @@ export default function ModalDetail({ show, handleClose, data }: ModalsProps) {
   const walletContext = useContext(OpenSelectWallet);
   const cancelButtonRef = useRef(null);
   const { seconds, minutes, hours, days, isRunning } = useCountdown({
-    time: 1727827200000,
+    time: data?.start_at,
+  });
+  const {
+    seconds: endSeconds,
+    minutes: endMinutes,
+    hours: endHours,
+    days: endDays,
+    isRunning: endIsRunning,
+  } = useCountdown({
+    time: data?.end_at,
   });
   const { isConnected } = useInkathon();
 
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [payload, setPayload] = useState(initialPayload);
+  const { api, activeAccount, activeChain } = useInkathon();
 
   const closeModal = () => {
     handleClose();
     setPayload(initialPayload);
     setSubmitted(false);
     setLoading(false);
+  };
+
+  const buyToken = async (
+    contractAddress: string,
+    decimals: number,
+    saleRate: number,
+    amount: number
+  ) => {
+    setLoading(true);
+    const amountFinal = new BN(amount)
+      .mul(new BN(10).pow(new BN(decimals)))
+      .div(new BN(saleRate))
+      .toString();
+    console.log(amountFinal)
+    // All native chain use 18 decimals
+    // * 10000 to support fraction
+    const contract = new ContractPromise(
+      api as ApiPromise,
+      metadata_psp22,
+      contractAddress
+    );
+
+    try {
+      await contractTx(
+        api as ApiPromise,
+        activeAccount?.address as string,
+        contract,
+        'buy',
+        { value: amountFinal },
+        [],
+        async (result: any) => {
+          if (result.status.isInBlock || result.status.isFinalized) {
+            console.log(result);
+            setLoading(false);
+            setSubmitted(true);
+            setTimeout(() => {
+              setSubmitted(false);
+            }, 6000);
+          }
+        }
+      );
+    } catch (error) {
+      setLoading(false);
+      console.error(error);
+    }
   };
 
   const onInput = (e: ChangeEvent<HTMLInputElement>, type: string) => {
@@ -48,9 +115,22 @@ export default function ModalDetail({ show, handleClose, data }: ModalsProps) {
   };
 
   const onSubmit = async () => {
-    console.log('payload ', payload);
-    setSubmitted(true);
+    await buyToken(
+      data?.contract_address,
+      data?.decimals,
+      data?.sale_rate.$numberDecimal,
+      payload.amount
+    );
   };
+
+  const formattedMaxSupply = new BN(data?.max_supply.$numberDecimal as string)
+    .div(new BN(10).pow(new BN(data?.decimals as number)))
+    .toString();
+  const formattedBoughtSupply = new BN(
+    data?.bought_supply.$numberDecimal as string
+  )
+    .div(new BN(10).pow(new BN(data?.decimals as number)))
+    .toString();
 
   return (
     <Transition.Root show={show} as={Fragment}>
@@ -117,10 +197,10 @@ export default function ModalDetail({ show, handleClose, data }: ModalsProps) {
                     </div>
                     <div className="mb-5 block">
                       <h3 className="text-heading-style mb-2 uppercase text-gray-900 dark:text-white">
-                        Total Supply
+                        Supply
                       </h3>
                       <div className="text-sm leading-6 -tracking-wider text-gray-600 dark:text-gray-400">
-                        {data?.total_supply}
+                        {formattedBoughtSupply}/{formattedMaxSupply}
                       </div>
                     </div>
                     <div className="mb-5 block">
@@ -147,24 +227,21 @@ export default function ModalDetail({ show, handleClose, data }: ModalsProps) {
                         {data?.contract_address}
                       </div>
                     </div>
-                    <div className="mb-5 block">
-                      <h3 className="text-heading-style mb-2 uppercase text-gray-900 dark:text-white">
-                        Minter Address
-                      </h3>
-                      <div className="text-sm leading-6 -tracking-wider text-gray-600 dark:text-gray-400">
-                        {data?.minter_address}
-                      </div>
-                    </div>
                   </div>
                   <div>
                     <div className="mb-5 block">
                       <h3 className="text-heading-style mb-2 uppercase text-gray-900 dark:text-white">
-                        Presale End In
+                        {isRunning ? 'Sale Starts In' : 'Sale Ends In'}
                       </h3>
                       <div className="text-sm leading-6 -tracking-wider text-gray-600 dark:text-gray-400">
-                        {isRunning && (
+                        {isRunning ? (
                           <div className="mt-4">
-                            Ends in: {days}D {hours}H {minutes}M {seconds}S
+                            Starts in: {days}D {hours}H {minutes}M {seconds}S
+                          </div>
+                        ) : (
+                          <div className="mt-4">
+                            Ends in: {endDays}D {endHours}H {endMinutes}M{' '}
+                            {endSeconds}S
                           </div>
                         )}
                       </div>
@@ -174,7 +251,7 @@ export default function ModalDetail({ show, handleClose, data }: ModalsProps) {
                         Status
                       </h3>
                       <div className="text-sm leading-6 -tracking-wider text-gray-600 dark:text-gray-400">
-                        In Progress
+                        {isRunning ? 'Upcoming' : 'In Progress'}
                       </div>
                     </div>
                     <div className="mb-5">
@@ -189,6 +266,14 @@ export default function ModalDetail({ show, handleClose, data }: ModalsProps) {
                           inputClassName="spin-button-hidden"
                           onChange={(e) => onInput(e, 'amount')}
                         />
+                      </div>
+                      <div className="mt-4">
+                        Total: {payload.amount} {data?.symbol}
+                      </div>
+                      <div className="mt-4">
+                        Price:{' '}
+                        {payload.amount / data?.sale_rate.$numberDecimal}{' '}
+                        {chainCoinSymbols[data?.chain]}
                       </div>
                       {isConnected ? (
                         <Button
@@ -213,7 +298,7 @@ export default function ModalDetail({ show, handleClose, data }: ModalsProps) {
                           shape="rounded"
                           className="mt-5"
                         >
-                          Connet Wallet
+                          Connect Wallet
                         </Button>
                       )}
                     </div>
