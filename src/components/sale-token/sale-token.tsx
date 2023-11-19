@@ -160,7 +160,7 @@ export default function SaleToken() {
         <div className="mb-6 grid grid-cols-1 gap-12 sm:mb-10">
           <div className="flex items-center justify-center">
             <h2 className="text-lg font-medium uppercase tracking-wider text-gray-900 dark:text-white  sm:text-2xl">
-              Sale Token
+              Launch Token
             </h2>
           </div>
           <Button isLoading={true} />
