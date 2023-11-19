@@ -28,6 +28,7 @@ const routes = {
   lauchCollection: '/collection/launch',
   lauchCoin: '/collection/coin',
   saleToken: '/sale-token',
+  analytics: '/analytics'
 };
 
 export default routes;

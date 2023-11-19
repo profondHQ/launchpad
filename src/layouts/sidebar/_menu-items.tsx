@@ -18,6 +18,11 @@ export const defaultMenuItems = [
     href: routes.home,
   },
   {
+    name: 'Analytics',
+    icon: <CompassIcon />,
+    href: routes.analytics,
+  },
+  {
     name: 'Create',
     icon: <CompassIcon />,
     href: routes.lauchCollection,
