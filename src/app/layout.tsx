@@ -3,11 +3,8 @@ import { Fira_Code } from 'next/font/google';
 import cn from 'classnames';
 import { QueryClientProvider } from '@/app/shared/query-client-provider';
 import { ThemeProvider } from '@/app/shared/theme-provider';
-import WagmiConfig from '@/app/shared/wagmi-config';
 import ModalsContainer from '@/components/modal-views/container';
 import DrawersContainer from '@/components/drawer-views/container';
-import SettingsButton from '@/components/settings/settings-button';
-import SettingsDrawer from '@/components/settings/settings-drawer';
 
 // base css file
 import 'overlayscrollbars/overlayscrollbars.css';
@@ -50,17 +47,15 @@ export default function RootLayout({
         <QueryClientProvider>
           <ThemeProvider>
             {/* <WalletContextProvider> */}
-              <InkathonWalletContextProvider>
-                <SettingsButton />
-                <SettingsDrawer />
-                <Suspense fallback={null}>
-                  <ModalsContainer />
-                  <DrawersContainer />
-                </Suspense>
-                <SelectWalletModal theme={'dark'} />
-                <SelectAccountModal theme={'dark'} />
-                {children}
-              </InkathonWalletContextProvider>
+            <InkathonWalletContextProvider>
+              <Suspense fallback={null}>
+                <ModalsContainer />
+                <DrawersContainer />
+              </Suspense>
+              <SelectWalletModal theme={'dark'} />
+              <SelectAccountModal theme={'dark'} />
+              {children}
+            </InkathonWalletContextProvider>
             {/* </WalletContextProvider> */}
           </ThemeProvider>
         </QueryClientProvider>

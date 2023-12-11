@@ -44,7 +44,7 @@ function HeaderRightArea() {
   const isMounted = useIsMounted();
   const breakpoint = useBreakpoint();
   const { openDrawer, isOpen } = useDrawer();
-  const {isConnected} = useInkathon()
+  const { isConnected } = useInkathon();
 
   return (
     <div className="order-last flex shrink-0 items-center">
@@ -101,11 +101,28 @@ export function Header() {
   );
 }
 
+export function AlertChain() {
+  const { isConnected, activeChain } = useInkathon();
+
+  if (isConnected && activeChain?.network !== 'shibuya') {
+    return (
+      <div className="relative bg-white py-1 shadow-card ltr:pl-4 ltr:pr-8 rtl:pl-8 rtl:pr-4 dark:bg-red-700 sm:ltr:pl-6 sm:ltr:pr-10 sm:rtl:pl-10 sm:rtl:pr-6">
+        <h4 className="ms-5 text-center text-sm font-medium uppercase tracking-wider dark:text-white ">
+          You are using <strong>[{activeChain?.name}]</strong> This chain is not
+          yet indexed, your changes here won't be indexed. Active chains:{' '}
+          <strong>[Shibuya]</strong>
+        </h4>
+      </div>
+    );
+  }
+}
+
 export default function MinimalLayout({
   children,
 }: React.PropsWithChildren<{}>) {
   return (
     <>
+      <AlertChain />
       <Header />
       <div className="bg-light-100 dark:bg-dark-100 mt-8 flex min-h-screen flex-col gap-6 px-4 sm:px-6 lg:px-8 3xl:px-10">
         <main className="mx-auto mb-12 flex w-full max-w-[2160px] flex-grow flex-col">

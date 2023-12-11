@@ -83,7 +83,7 @@ export default function SelectChain() {
               Test Network
             </Listbox.Label>
             {allSubstrateChains
-              .filter((chain) => chain.testnet && chain.network === 'shibuya')
+              .filter((chain) => chain.testnet)
               .map((option) => {
                 return (
                   <Listbox.Option key={option.ss58Prefix} value={option}>
