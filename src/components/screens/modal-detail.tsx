@@ -118,16 +118,16 @@ export default function ModalDetail({ show, handleClose, data }: ModalsProps) {
     await buyToken(
       data?.contract_address,
       data?.decimals,
-      data?.sale_rate.$numberDecimal,
+      data?.sale_rate.$numberDecimal || data?.sale_rate,
       payload.amount
     );
   };
 
-  const formattedMaxSupply = new BN(data?.max_supply.$numberDecimal as string)
+  const formattedMaxSupply = new BN((data?.max_supply.$numberDecimal || data?.max_supply) as string)
     .div(new BN(10).pow(new BN(data?.decimals as number)))
     .toString();
   const formattedBoughtSupply = new BN(
-    data?.bought_supply.$numberDecimal as string
+    (data?.bought_supply.$numberDecimal || data?.bought_supply) as string
   )
     .div(new BN(10).pow(new BN(data?.decimals as number)))
     .toString();
@@ -272,7 +272,7 @@ export default function ModalDetail({ show, handleClose, data }: ModalsProps) {
                       </div>
                       <div className="mt-4">
                         Price:{' '}
-                        {payload.amount / data?.sale_rate.$numberDecimal}{' '}
+                        {payload.amount / (data?.sale_rate.$numberDecimal || data?.sale_rate)}{' '}
                         {chainCoinSymbols[data?.chain]}
                       </div>
                       {isConnected ? (

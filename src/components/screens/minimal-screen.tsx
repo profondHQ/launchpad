@@ -55,8 +55,8 @@ export default function MinimalScreen() {
                 key={`coin-${coin?.contract_address}`}
                 name={coin.name}
                 symbol={coin.symbol}
-                maxSupply={coin.max_supply.$numberDecimal}
-                boughtSupply={coin.bought_supply.$numberDecimal}
+                maxSupply={coin.max_supply.$numberDecimal || coin.max_supply}
+                boughtSupply={coin.bought_supply.$numberDecimal || coin.bought_supply}
                 decimals={coin.decimals}
                 onClick={() => {
                   setModalOpen(true);

@@ -252,10 +252,12 @@ export default function SaleToken() {
       </div>
       <div className="mb-8">
         <InputLabel title="Sale Rate" important />
+        <p>Token price in native currency. e.g. sale rate 0.1 in Shibuya means 0.1 SBY = 1 Token. Maximum value = 1 in native currency</p>
         <Input
           error={isCoinInitiated ? 'Coin sale has been set' : undefined}
           disabled={isCoinInitiated}
           min={0}
+          max={1}
           type="number"
           placeholder={`Enter your sale rate in ${
             selectedCoin ? selectedCoin?.chain : 'Native Currency'
